@@ -1,0 +1,18 @@
+server:
+    port: 8081
+
+logging:
+    level:
+        org.hibernate.SQL: DEBUG
+        org.springframework.security: DEBUG
+
+spring:
+    jackson:
+        serialization:
+            INDENT_OUTPUT: true
+
+    session:
+        store-type: redis
+
+security:
+    sessions: NEVER

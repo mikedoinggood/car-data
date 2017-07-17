@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="header" class="header">
+      <script type="text/javascript">
+        $(document).ready(function() {
+            $("#logoutlink").click(function() {
+                $("#logoutform").submit();
+            });
+        });
+      </script>
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">Car Data</a>
+          </div>
+          <div sec:authorize="isAuthenticated()" class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="/addcar">Add Car</a></li>
+              <li class="dropdown">
+                <form th:action="@{/logout}" id="logoutform" method="post">
+                </form>        
+                <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">Logged in as <strong><span sec:authentication="name"></span></strong>
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li><a id="logoutlink" href="#">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </body>
+</html>

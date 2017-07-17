@@ -1,0 +1,7 @@
+com/glicerial/samples/cardataweb/GlobalAuthenticationConfig.class
+com/glicerial/samples/cardataweb/WebSecurityConfig$ResourceWebSecurityConfig.class
+com/glicerial/samples/cardataweb/controller/CarController.class
+com/glicerial/samples/cardataweb/WebSecurityConfig.class
+com/glicerial/samples/cardataweb/controller/LoginController.class
+com/glicerial/samples/cardataweb/Application.class
+com/glicerial/samples/cardataweb/WebSecurityConfig$UiWebSecurityConfig.class

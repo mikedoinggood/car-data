@@ -1,0 +1,11 @@
+com/glicerial/samples/cardataapi/entity/Car.class
+com/glicerial/samples/cardataapi/repository/CarRepository.class
+com/glicerial/samples/cardataapi/repository/TrimLevelRepository.class
+com/glicerial/samples/cardataapi/OAuth2Configuration$1.class
+com/glicerial/samples/cardataapi/OAuth2Configuration$ResourceServerConfiguration.class
+com/glicerial/samples/cardataapi/OAuth2Configuration.class
+com/glicerial/samples/cardataapi/WebSecurityConfig.class
+com/glicerial/samples/cardataapi/Application.class
+com/glicerial/samples/cardataapi/controller/CarRestController.class
+com/glicerial/samples/cardataapi/GlobalAuthenticationConfig.class
+com/glicerial/samples/cardataapi/entity/TrimLevel.class
