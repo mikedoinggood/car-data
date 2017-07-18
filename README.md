@@ -10,7 +10,7 @@ Some of the other components being used:
 Server:
 - Spring Oauth2
 - Spring Rest Controller
-- Spring Repositories
+- Spring Data Repositories
 - In-memory H2 database
 
 Web Client:
