@@ -11,7 +11,7 @@ Server:
 - Spring Oauth2
 - Spring Rest Controller
 - Spring Data Repositories
-- In-memory H2 database
+- MySQL database
 
 Web Client:
 - Thymeleaf
