@@ -2,6 +2,7 @@ package com.glicerial.samples.cardataapi.entity;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,14 +18,13 @@ public class Car {
     private int year;
     private String make;
     private String model;
-    @OneToMany
+    @OneToMany(mappedBy="car", cascade = CascadeType.ALL)
     private Set<TrimLevel> trimLevels;
 
-    public Car(int year, String make, String model, Set<TrimLevel> trimLevels) {
+    public Car(int year, String make, String model) {
         this.year = year;
         this.make = make;
         this.model = model;
-        this.trimLevels = trimLevels;
     }
 
     public Car() {

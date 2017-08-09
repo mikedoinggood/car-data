@@ -7,6 +7,12 @@ logging:
         org.springframework.security: DEBUG
 
 spring:
+    datasource:
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost/car_data
+        username: dbuser
+        password: dbpassword
+
     jackson:
         serialization:
             INDENT_OUTPUT: true
