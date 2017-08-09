@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class TrimLevel {
@@ -12,6 +15,9 @@ public class TrimLevel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    @JsonIgnore //Prevent infinite loop
+    @ManyToOne
+    private Car car;
 
     public TrimLevel(String name) {
         this.name = name;
@@ -31,5 +37,13 @@ public class TrimLevel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
     }
 }
