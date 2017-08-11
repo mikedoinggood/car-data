@@ -20,6 +20,15 @@ resources:
         NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
         listOfServers: localhost:8081
 
+# Increase the Hystrix timeout to 10s (globally)
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 10000
+
 spring:
     session:
         store-type: redis
