@@ -20,3 +20,6 @@ Web Client:
 
 Android Client:
 - Retrofit
+
+Other:
+- A python/selenium script to test the web ui
