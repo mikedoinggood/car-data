@@ -1,9 +1,0 @@
-/Users/user/github/car-data/java-car-data/car-data-api/src/main/java/com/glicerial/samples/cardataapi/Application.java
-/Users/user/github/car-data/java-car-data/car-data-api/src/main/java/com/glicerial/samples/cardataapi/repository/CarRepository.java
-/Users/user/github/car-data/java-car-data/car-data-api/src/main/java/com/glicerial/samples/cardataapi/controller/CarRestController.java
-/Users/user/github/car-data/java-car-data/car-data-api/src/main/java/com/glicerial/samples/cardataapi/GlobalAuthenticationConfig.java
-/Users/user/github/car-data/java-car-data/car-data-api/src/main/java/com/glicerial/samples/cardataapi/OAuth2Configuration.java
-/Users/user/github/car-data/java-car-data/car-data-api/src/main/java/com/glicerial/samples/cardataapi/entity/Car.java
-/Users/user/github/car-data/java-car-data/car-data-api/src/main/java/com/glicerial/samples/cardataapi/repository/TrimLevelRepository.java
-/Users/user/github/car-data/java-car-data/car-data-api/src/main/java/com/glicerial/samples/cardataapi/entity/TrimLevel.java
-/Users/user/github/car-data/java-car-data/car-data-api/src/main/java/com/glicerial/samples/cardataapi/WebSecurityConfig.java
