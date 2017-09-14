@@ -1,5 +1,4 @@
-package com.glicerial.samples.cardataweb;
-
+package com.glicerial.samples.cardatacore;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +7,6 @@ import org.springframework.security.config.annotation.authentication.configurers
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
 
 @Configuration
 public class GlobalAuthenticationConfig extends GlobalAuthenticationConfigurerAdapter {
