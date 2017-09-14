@@ -17,6 +17,16 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.glicerial.samples</groupId>
+        <artifactId>car-data-core</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -37,8 +47,9 @@
   </dependencies>
 
   <modules>
-  	<module>car-data-api</module>
-  	<module>car-data-web</module>
+    <module>car-data-api</module>
+    <module>car-data-web</module>
+    <module>car-data-core</module>
   </modules>
 
   <build>
