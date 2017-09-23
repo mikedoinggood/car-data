@@ -44,8 +44,10 @@ public class CarRestController {
     Car addCar(@RequestBody Car car) {
         Set<TrimLevel> trimLevels = car.getTrimLevels();
 
-        for (TrimLevel tl : trimLevels) {
-            tl.setCar(car);
+        if (trimLevels != null) {
+            for (TrimLevel tl : trimLevels) {
+                tl.setCar(car);
+            }
         }
 
         carRepository.save(car);
