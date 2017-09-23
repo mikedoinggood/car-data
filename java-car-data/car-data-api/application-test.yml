@@ -1,0 +1,22 @@
+server:
+    port: 0
+
+logging:
+    level:
+        org.hibernate.SQL: DEBUG
+        org.springframework.security: DEBUG
+
+spring:
+    datasource:
+        driverClassName: org.h2.Driver
+        url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"
+
+    jackson:
+        serialization:
+            INDENT_OUTPUT: true
+
+    session:
+        store-type: redis
+
+security:
+    sessions: NEVER
