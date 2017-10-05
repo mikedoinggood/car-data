@@ -116,12 +116,12 @@ public class AddCarsTest {
             String tableTrimLevelsString = rowColumns.get(3).getText();            
             String regexString = ".*\\b" + Pattern.quote(trimLevel) + "\\b.*";
 
-            if (tableTrimLevelsString.matches(regexString)) {
-                return true;
-            } 
+            if (!tableTrimLevelsString.matches(regexString)) {
+                return false;
+            }
         }
 
-        return false;
+        return true;
     }
 
     private String getCarString(Map<String, String> carMap) {
