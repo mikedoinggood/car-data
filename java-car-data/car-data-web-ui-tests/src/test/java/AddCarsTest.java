@@ -30,6 +30,7 @@ public class AddCarsTest {
         carMap1.put("make", "Honda");
         carMap1.put("model", "Civic");
         carMap1.put("trimLevels", generateRandomTrimLevels());
+        carMap1.put("found", "false");
         carMapList.add(carMap1); 
 
         Map<String, String> carMap2 = new HashMap<String, String>();
@@ -38,6 +39,7 @@ public class AddCarsTest {
         carMap2.put("make", "Toyota");
         carMap2.put("model", "Corolla");
         carMap2.put("trimLevels", generateRandomTrimLevels());
+        carMap2.put("found", "false");
         carMapList.add(carMap2); 
 
         Map<String, String> carMap3 = new HashMap<String, String>();
@@ -46,6 +48,7 @@ public class AddCarsTest {
         carMap3.put("make", "Ford");
         carMap3.put("model", "Explorer");
         carMap3.put("trimLevels", generateRandomTrimLevels());
+        carMap3.put("found", "false");
         carMapList.add(carMap3); 
 
         // May need following line if geckodriver not in your path
@@ -56,9 +59,7 @@ public class AddCarsTest {
 
     @Test
     public void doAddCarsTest() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login("user", "password");
-
+        login();
         addCars();
         checkCars();
     }
@@ -68,11 +69,17 @@ public class AddCarsTest {
         driver.quit();
     }
 
+    private void login() {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login("user", "password");
+    }
+
     private void addCars() {
         for (Map<String, String> carMap : carMapList) {
             driver.findElement(By.linkText("Add Car")).click();
             AddCarPage addCarPage = new AddCarPage(driver);
             addCarPage.addCar(carMap);
+            System.out.println("Added car: " + getCarString(carMap));
         }
     }
 
@@ -80,20 +87,20 @@ public class AddCarsTest {
         MainPage mainPage = new MainPage(driver);
         List<WebElement> carRows = mainPage.getCarRows();
 
-        for (Map<String, String> carMap : carMapList) {
-            boolean carFound = false;
+        for (WebElement row : carRows) {
+            List<WebElement> rowColumns = row.findElements(By.xpath(".//td"));
 
-            for (WebElement row : carRows) {
-                List<WebElement> rowColumns = row.findElements(By.xpath(".//td"));
-
+            for (Map<String, String> carMap : carMapList) {
                 if (checkMakeModelYear(rowColumns, carMap) && checkTrimLevels(rowColumns, carMap)) {
-                    carFound = true;
+                    carMap.put("found", "true");
                     System.out.println("Found car: " + getCarString(carMap));
                     break;
                 }
             }
+        }
 
-            assertTrue("Could not find car: " + getCarString(carMap), carFound == true);
+        for (Map<String, String> carMap : carMapList) {
+            assertTrue("Could not find car: " + getCarString(carMap), Boolean.valueOf(carMap.get("found")));
         }
     }
 
