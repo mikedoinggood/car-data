@@ -22,4 +22,4 @@ Android Client:
 - Retrofit
 
 Other:
-- A python/selenium script to test the web ui
+- Python and JUnit Selenium tests for the web ui
