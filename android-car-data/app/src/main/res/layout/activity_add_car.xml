@@ -14,80 +14,87 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <LinearLayout
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_year"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_default_margin"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_toolbar">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_year"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/year_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_default_margin">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/year_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="Year"/>
-        </android.support.design.widget.TextInputLayout>
+            android:hint="Year"
+            android:inputType="number" />
+    </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_make"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_make"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_default_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_layout_year">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/make_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_default_margin">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/make_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Make"
-                android:imeOptions="flagNoExtractUi"
-                android:inputType="textCapSentences"/>
-        </android.support.design.widget.TextInputLayout>
+            android:hint="Make"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="textCapSentences" />
+    </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_model"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_model"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_default_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_layout_make">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/model_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_default_margin">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/model_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Model"
-                android:imeOptions="flagNoExtractUi"
-                android:inputType="textCapSentences"/>
-        </android.support.design.widget.TextInputLayout>
+            android:hint="Model"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="textCapSentences" />
+    </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_trim_levels"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_trim_levels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_default_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_layout_model">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/trim_levels_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_default_margin">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/trim_levels_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Trim Levels (1 per line)"
-                android:imeOptions="flagNoExtractUi"
-                android:lines="5"
-                android:inputType="textMultiLine|textCapSentences"/>
-        </android.support.design.widget.TextInputLayout>
+            android:hint="Trim Levels (1 per line)"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="textMultiLine|textCapSentences"
+            android:lines="5" />
+    </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/add_car_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_default_margin"
-            android:text="Add Car"
-            android:onClick="addCar" />
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/add_car_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_default_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_layout_trim_levels"
+        android:onClick="addCar"
+        android:text="Add Car" />
 
 </android.support.constraint.ConstraintLayout>
