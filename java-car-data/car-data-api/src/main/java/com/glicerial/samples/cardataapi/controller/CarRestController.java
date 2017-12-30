@@ -45,8 +45,15 @@ public class CarRestController {
         Set<TrimLevel> trimLevels = car.getTrimLevels();
 
         if (trimLevels != null) {
-            for (TrimLevel tl : trimLevels) {
-                tl.setCar(car);
+            Iterator<TrimLevel> iterator = trimLevels.iterator();
+            while (iterator.hasNext()) {
+                TrimLevel tl = iterator.next();
+
+                if (tl.getName().trim().equals("")) {
+                    iterator.remove();
+                } else {
+                    tl.setCar(car);
+                }
             }
         }
 
