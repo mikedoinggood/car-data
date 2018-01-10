@@ -1,0 +1,19 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Year</th>
+      <th>Make</th>
+      <th>Model</th>
+      <th>Trim Levels</th>
+    </tr>
+  </thead>
+  <tbody id="tablebody" class="ng-cloak">
+    <tr ng-repeat="car in $ctrl.cars">
+      <td>{{ car.year }}</td>
+      <td>{{ car.make }}</td>
+      <td>{{ car.model }}</td>
+      <td>{{ $ctrl.getTrimLevels(car.trimLevels) }}</td>
+    </tr>
+  </tbody>
+</table>        
+  
