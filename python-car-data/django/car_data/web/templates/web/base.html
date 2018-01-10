@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'web/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'web/styles.css' %}"/>
+    <script type="text/javascript" src="{% static 'web/jquery-3.1.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'web/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'web/angular.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'web/app.module.js' %}"></script>
+    <script type="text/javascript" src="{% static 'web/car-list/car-list.module.js' %}"></script>
+    <script type="text/javascript" src="{% static 'web/car-list/car-list.component.js' %}"></script>  
+    <script type="text/javascript" src="{% static 'web/car-form/car-form.module.js' %}"></script>
+    <script type="text/javascript" src="{% static 'web/car-form/car-form.component.js' %}"></script>  
+    {% block scripts %}
+    {% endblock %}
+    {% block title %}
+      <title>Car Data</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div class="wrapper">
+      {% include "web/header.html" %}
+      <div class="maincontent">
+          <div class="content">
+            {% block content %}{% endblock %}
+          </div>
+      </div>
+      {% include "web/footer.html" %}
+    </div>
+  </body>
+</html>
