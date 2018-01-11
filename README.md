@@ -13,7 +13,7 @@ Django Version:
 - MySQL database
 - AngularJS
 - Bootstrap
-- Note: this project also requires additional steps of manually creating the Django user(s) and an OAuth2 Client Application entry
+- Note: this project also requires additional steps of manually creating the Django user(s) and an OAuth2 client application entry
 
 Spring Boot Version:
 - Spring Oauth2
