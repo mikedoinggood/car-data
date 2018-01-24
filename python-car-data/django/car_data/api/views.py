@@ -25,7 +25,7 @@ def cars_post(request):
     year = data.get('year')
     make = data.get('make')
     model = data.get('model')
-    trim_levels = data.get('trimLevels', [])
+    trim_levels = data.get('trimLevels')
 
     with transaction.atomic():
         car = Car.objects.create(year=year, make=make, model=model)
@@ -38,6 +38,63 @@ def cars_post(request):
     car_dict = convert_car_to_dict(saved_car)
 
     return HttpResponse(json.dumps(car_dict, indent=4), content_type='application/json')
+
+def car_detail_get(self, request, *arg, **kwargs):
+    try:
+        car = Car.objects.get(pk=kwargs['car_id'])
+    except Car.DoesNotExist as e:
+        return HttpResponse(status=404, content_type='application/json')
+
+    car_dict = convert_car_to_dict(car)
+
+    return HttpResponse(json.dumps(car_dict, indent=4), content_type='application/json')
+
+def car_update_put(self, request, *args, **kwargs):
+    try:
+        car = Car.objects.get(pk=kwargs['car_id'])
+    except Car.DoesNotExist as e:
+        return HttpResponse(status=404, content_type='application/json')
+
+    data = json.loads(request.body)
+    car.year = data.get('year')
+    car.make = data.get('make')
+    car.model = data.get('model')
+    trim_levels = data.get('trimLevels')
+
+    with transaction.atomic():
+        car.save()
+
+        for trim_level in trim_levels:
+            if trim_level.get('id'):
+                if trim_level.get('name'):
+                    try:
+                        saved_trim_level = TrimLevel.objects.get(pk=trim_level['id'])
+                    except TrimLevel.DoesNotExist as e:
+                        return HttpResponse(status=404, content_type='application/json')
+
+                    if trim_level.get('delete'):
+                        saved_trim_level.delete()
+                    else:
+                        saved_trim_level.name = trim_level['name']
+                        saved_trim_level.save()
+                else:
+                    return HttpResponse(status=400, content_type='application/json')
+            else:
+                if trim_level['name']:
+                    car.trimlevel_set.add(TrimLevel(car=car, name=trim_level['name']), bulk=False)
+
+    saved_car = Car.objects.get(id=car.id)
+    car_dict = convert_car_to_dict(saved_car)
+
+    return HttpResponse(json.dumps(car_dict, indent=4), content_type='application/json')
+
+def car_delete(self, request, *arg, **kwargs):
+    try:
+        Car.objects.get(pk=kwargs['car_id']).delete()
+    except Car.DoesNotExist as e:
+        return HttpResponse(status=404, content_type='application/json')
+
+    return HttpResponse(status=200, content_type='application/json')
 
 def convert_car_to_dict(car):
     trim_levels = []
@@ -61,6 +118,8 @@ def convert_car_to_dict(car):
     return car_dict
 
 class CarsUrl(LoginRequiredMixin, View):
+    raise_exception = True
+
     def get(self, request):
         return cars_get(request)
 
@@ -74,3 +133,15 @@ class OauthCarsUrl(ProtectedResourceView):
 
     def post(self, request):
         return cars_post(request)
+
+class CarDetailUrl(LoginRequiredMixin, View):
+    raise_exception = True
+
+    def get(self, request, *arg, **kwargs):
+        return car_detail_get(self, request, *arg, **kwargs)
+
+    def put(self, request, *arg, **kwargs):
+        return car_update_put(self, request, *arg, **kwargs)
+
+    def delete(self, request, *arg, **kwargs):
+        return car_delete(self, request, *arg, **kwargs)
