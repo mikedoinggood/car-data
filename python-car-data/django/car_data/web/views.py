@@ -26,3 +26,13 @@ def index(request):
 def addCar(request):
     context = None
     return render(request, 'web/addcar.html', context)
+
+@login_required
+def car_detail(request, car_id):
+    context = None
+    return render(request, 'web/cardetail.html', context)
+
+@login_required
+def edit_car(request, car_id):
+    context = None
+    return render(request, 'web/editcar.html', context)

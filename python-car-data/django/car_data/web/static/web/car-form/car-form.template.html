@@ -1,28 +1,41 @@
-<div class="col-xs-9 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-5 col-md-offset-3">
+<div ng-if="$ctrl.carNotFound">
+  <h4>Car not found.</h4>
+</div>
+<div ng-if="$ctrl.showForm" class="col-sm-8 col-sm-offset-2 col-md-5 col-md-offset-3">
   <form id="addcarform">
-    <h3>Add Car</h3>
-    <br/>
+    <h3>{{ $ctrl.formHeader }}</h3>
+    <hr>
     <div class="form-group">
       <label for="year">Year:</label>
-      <input class="form-control" type="number" ng-model="car.year" id="year" />
+      <input class="form-control" type="number" ng-model="$ctrl.car.year" id="year" />
     </div>
     <div class="form-group">
       <label for="make">Make:</label>
-      <input class="form-control" type="text" ng-model="car.make" id="make" />
+      <input class="form-control" type="text" ng-model="$ctrl.car.make" id="make" />
     </div>
-    <br/>
     <div class="form-group">
       <label for="model">Model:</label>
-      <input class="form-control" type="text" ng-model="car.model" id="model" />
+      <input class="form-control" type="text" ng-model="$ctrl.car.model" id="model" />
     </div>
-    <br/>
-    <div class="form-group">
-      <label for="model">Trim Levels (1 per line):</label>
-      <textarea class="form-control" rows="5" ng-model="car.trimLevels" id="trimlevels" ></textarea>
+    <div>
+      <label>Trim Levels (1 per field):</label>
+      <div ng-repeat="trim in $ctrl.car.trimLevels" ng-hide="trim.delete">
+      <div class="input-group">
+        <input class="form-control" type="text" ng-model="trim.name"/>
+        <span class="input-group-btn">
+          <button class="btn btn-default" ng-if="trim.id" ng-click="$ctrl.deleteTrimLevel($index)">Delete</button>
+        </span>
+      </div>
+      </div>
+      <br>
+      <button class="btn btn-default pull-right" ng-click="$ctrl.addTrimLevel()">Add Another Trim Level</button>
     </div>
-    <br/>
+    <br>
+    <br>
+    <br>
+    <hr>
     <div class="form-group">
-      <button type="button" class="btn btn-primary" id="addcarbutton" ng-disabled="$ctrl.submitDisabled" ng-click="$ctrl.submit(car)">Submit</button>
+      <button type="button" class="btn btn-primary" ng-disabled="$ctrl.submitDisabled" ng-click="$ctrl.submit($ctrl.car)">Submit</button>
     </div>
   </form>
 </div>

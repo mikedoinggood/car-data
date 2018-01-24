@@ -1,0 +1,33 @@
+<div ng-if="$ctrl.carNotFound">
+  <h4>Car not found.</h4>
+</div>    
+<div ng-if="$ctrl.carFound">
+  <h4>Car Details</h4>
+  <a class="btn btn-default btn-sm" href="{{$ctrl.carId}}/edit" role="button">Edit</a>
+  <button class="btn btn-default btn-sm" ng-disabled="$ctrl.deleteDisabled" ng-click="$ctrl.confirmDelete()">Delete</button>
+  <hr>
+  <div>
+    <p class="h4">Year:</p>
+    <div class="container">
+      <p>{{ $ctrl.car.year }}</p>
+    </div>
+  </div>
+  <div>
+    <p class="h4">Make:</p>
+    <div class="container">
+      <p>{{ $ctrl.car.make }}</p>
+    </div>
+  </div>
+  <div>
+    <p class="h4">Model:</p>
+    <div class="container">
+      <p>{{$ctrl.car.model }}</p>
+    </div>
+  </div>
+  <div>
+    <p class="h4">Trim Levels:</p>
+    <div class="container" ng-repeat="trim in $ctrl.car.trimLevels | orderBy:'name'">
+      <div>{{ trim.name }}</div>
+    </div>
+  </div>
+</div>

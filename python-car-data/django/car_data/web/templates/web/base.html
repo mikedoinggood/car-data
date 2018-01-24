@@ -2,16 +2,22 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#222222"/>
     <link rel="stylesheet" type="text/css" href="{% static 'web/bootstrap.min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'web/styles.css' %}"/>
     <script type="text/javascript" src="{% static 'web/jquery-3.1.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'web/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'web/angular.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'web/angular-resource.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'web/app.module.js' %}"></script>
     <script type="text/javascript" src="{% static 'web/car-list/car-list.module.js' %}"></script>
     <script type="text/javascript" src="{% static 'web/car-list/car-list.component.js' %}"></script>  
     <script type="text/javascript" src="{% static 'web/car-form/car-form.module.js' %}"></script>
-    <script type="text/javascript" src="{% static 'web/car-form/car-form.component.js' %}"></script>  
+    <script type="text/javascript" src="{% static 'web/car-form/car-form.component.js' %}"></script>
+    <script type="text/javascript" src="{% static 'web/car-detail/car-detail.module.js' %}"></script>
+    <script type="text/javascript" src="{% static 'web/car-detail/car-detail.component.js' %}"></script>
     {% block scripts %}
     {% endblock %}
     {% block title %}

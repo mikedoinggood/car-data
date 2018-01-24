@@ -1,19 +1,31 @@
-<table class="table">
-  <thead>
-    <tr>
-      <th>Year</th>
-      <th>Make</th>
-      <th>Model</th>
-      <th>Trim Levels</th>
-    </tr>
-  </thead>
-  <tbody id="tablebody" class="ng-cloak">
-    <tr ng-repeat="car in $ctrl.cars">
-      <td>{{ car.year }}</td>
-      <td>{{ car.make }}</td>
-      <td>{{ car.model }}</td>
-      <td>{{ $ctrl.getTrimLevels(car.trimLevels) }}</td>
-    </tr>
-  </tbody>
-</table>        
-  
+<div ng-if="$ctrl.noCarsFound">
+  <h4>No cars found.</h4>
+</div>
+<div ng-if="$ctrl.carsFound" class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Year</th>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Trim Levels</th>
+      </tr>
+    </thead>
+    <tbody id="tablebody">
+      <tr ng-repeat="car in $ctrl.cars">
+        <td>
+          <a href="cars/{{car.id}}">{{ car.year }}</a>
+        </td>
+        <td>
+          <a href="cars/{{car.id}}">{{ car.make }}</a>
+        </td>
+        <td>
+          <a href="cars/{{car.id}}">{{ car.model }}</a>
+        </td>
+        <td>
+          <a href="cars/{{car.id}}">{{ $ctrl.getTrimLevels(car.trimLevels) }}</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
