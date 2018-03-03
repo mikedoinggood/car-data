@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html layout:decorator="layout">
+  <head>
+    <title> Car Details</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <script th:inline="javascript" type="text/javascript">
+      /*<![CDATA[*/
+          $(document).ready(function() {
+              var header = $("meta[name='_csrf_header']").attr("content");
+              var token = $("meta[name='_csrf']").attr("content");
+
+              var id = window.location.pathname.split('/')[2];
+              $("#editlink").attr('href', id + "/edit");
+
+              var getCarRequest = $.ajax({
+                  url:"/resources/cars/" + id,
+                  dataType: "json",
+                  method: "GET"
+              });
+
+              getCarRequest.done(function(data) {
+                  $("#cardetails").show();
+                  $("#year").text(data.year);
+                  $("#make").text(data.make);
+                  $("#model").text(data.model);
+
+                  data.trimLevels.sort(sortTrimLevels);
+                  var trimLevelsArray = [];
+                  for (var i=0; i<data.trimLevels.length; i++) {
+                      trimLevelsArray.push(data.trimLevels[i].name);
+                  }
+
+                  $.each(trimLevelsArray, function(i, item) {
+                      var div = $('<div></div>').text(item);
+                      $("#trimlevels").append(div);
+                  });
+              });
+
+              getCarRequest.fail(function(data) {
+                  $("#carnotfound").show();
+              });
+
+              $("#deletecarbutton").click(function() {
+                  $("#deletecarbutton").prop("disabled", true);
+
+                  if (window.confirm("Delete this car?")) {
+                      var deleteCarRequest = $.ajax({
+                          url:"/resources/cars/" + id,
+                          dataType: "json",
+                          method: "DELETE",
+                          beforeSend: function(request) {
+                              return request.setRequestHeader(header, token);
+                          }
+                      });
+
+                      deleteCarRequest.done(function(data) {
+                          window.alert("Deleted.");
+                          window.location.href="/";
+                      });
+
+                      deleteCarRequest.fail(function(data) {
+                          $("#deletecarbutton").prop("disabled", false);
+                          window.alert("Error deleting car!");
+                      });
+                  } else {
+                      $("#deletecarbutton").prop("disabled", false);
+                  }
+              });
+          });
+      /*]]>*/
+    </script>
+  </head>
+  <body>
+    <div class="container" layout:fragment="content">
+      <h4 id="carnotfound" style="display:none;">Car not found.</h4>
+      <div id="cardetails" style="display:none;">
+        <div>
+          <h4>Car Details</h4>
+          <a id="editlink" class="btn btn-default btn-sm" href="edit" role="button">Edit</a>
+          <button class="btn btn-default btn-sm" id="deletecarbutton">Delete</button>
+        </div>
+        <hr/>
+        <div>
+          <p class="h4">Year:</p>
+          <div class="container">
+            <p id="year"></p>
+          </div>
+        </div>
+        <div>
+          <p class="h4">Make:</p>
+          <div class="container">
+            <p id="make"></p>
+          </div>
+        </div>
+        <div>
+          <p class="h4">Model:</p>
+          <div class="container">
+            <p id="model"></p>
+          </div>
+        </div>
+        <div>
+          <p class="h4">Trim Levels:</p>
+          <div class="container" id="trimlevels">
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

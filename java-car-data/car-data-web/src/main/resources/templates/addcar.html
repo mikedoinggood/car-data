@@ -5,20 +5,32 @@
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <script th:inline="javascript" type="text/javascript">
-	  /*<![CDATA[*/
-	      $(document).ready(function() {
-	          $("#addcarbutton").click(function() {
-                  $("#addcarbutton").prop("disabled", true);
+      /*<![CDATA[*/
+          $(document).ready(function() {
+              $("#submitcarbutton").click(function() {
+                  $("#submitcarbutton").prop("disabled", true);
 
                   var header = $("meta[name='_csrf_header']").attr("content");
-	      	      var token = $("meta[name='_csrf']").attr("content");
+                  var token = $("meta[name='_csrf']").attr("content");
 
-                  var trimLevelsArray = $("#trimlevels").val().split("\n");
+                  var car = {};
+                  car.year = $("#year").val();
+                  car.make = $("#make").val();
+                  car.model = $("#model").val();
+
+                  if ($(".trimlevel").length > 0) {
+                      car.trimLevels = [];
+
+                      $(".trimlevel").each(function() {
+                          var trimLevel = {name: $(this).val()};
+                          car.trimLevels.push(trimLevel);
+                      });
+                  }
 
                   var addCarRequest = $.ajax({
                       url: "/resources/cars",
                       method: "POST",
-                      data: JSON.stringify({ year: $("#year").val(), make: $("#make").val(), model: $("#model").val(), trimLevels: trimLevelsArray }),
+                      data: JSON.stringify(car),
                       contentType: "application/json; charset=UTF-8",
                       processData : false,
                       dataType: "json",
@@ -33,44 +45,21 @@
                   });
 
                   addCarRequest.fail(function(data) {
-                    alert("Oops! Error trying to add car!");
-                    $("#addcarbutton").prop("disabled", false);
+                      alert("Oops! Error trying to add car!");
+                      $("#submitcarbutton").prop("disabled", true);
                   });
-
-	          });
+              });
           });
-	  /*]]>*/
+      /*]]>*/
     </script>
   </head>
   <body>
     <div class="container" layout:fragment="content">
       <div class="col-xs-9 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-5 col-md-offset-3">
-        <form id="addcarform">
-          <h3>Add Car</h3>
-          <br/>
-          <div class="form-group">
-            <label for="year">Year:</label>
-            <input class="form-control" type="text" name="year" id="year" />
-          </div>
-          <div class="form-group">
-            <label for="make">Make:</label>
-            <input class="form-control" type="text" name="make" id="make" />
-          </div>
-          <br/>
-          <div class="form-group">
-            <label for="model">Model:</label>
-            <input class="form-control" type="text" name="model" id="model" />
-          </div>
-          <br/>
-          <div class="form-group">
-            <label for="model">Trim Levels (1 per line):</label>
-            <textarea class="form-control" rows="5" name="trimlevels" id="trimlevels" ></textarea>
-          </div>
-          <br/>
-          <div class="form-group">
-            <button type="button" class="btn btn-primary" id="addcarbutton">Submit</button>
-          </div>
-        </form>
+        <h3>Add Car</h3>
+        <hr/>
+        <div th:replace="carform :: carform">
+        </div>
       </div>
     </div>
   </body>

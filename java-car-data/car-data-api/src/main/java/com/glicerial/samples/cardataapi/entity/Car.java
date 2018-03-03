@@ -18,7 +18,7 @@ public class Car {
     private int year;
     private String make;
     private String model;
-    @OneToMany(mappedBy="car", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="car", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TrimLevel> trimLevels;
 
     public Car(int year, String make, String model) {
