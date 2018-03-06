@@ -15,4 +15,14 @@ public class CarController {
     public String addCar() {
         return "addcar";
     }
+
+    @RequestMapping("/cars/{id}")
+    public String carDetail() {
+        return "cardetail";
+    }
+
+    @RequestMapping("/cars/{id}/edit")
+    public String editDetail() {
+        return "editcar";
+    }
 }
