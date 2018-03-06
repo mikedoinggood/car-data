@@ -20,13 +20,12 @@
                         var trimLevelsString = "";
 
                         item.trimLevels.sort(sortTrimLevels);
+
                         for (var i=0; i<item.trimLevels.length; i++) {
                             trimLevelsArray.push(item.trimLevels[i].name);
                         }
 
-                        // Sort trim levels
                         if (trimLevelsArray.length > 0) {
-                            trimLevelsArray;
                             trimLevelsString = trimLevelsArray.join(", ");
                         }
 

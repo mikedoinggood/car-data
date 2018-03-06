@@ -63,7 +63,7 @@
 
                       $(".existingtrimlevel").each(function() {
                           // Break loop if value is empty
-                          if (!$(this).val()) {
+                          if (!$(this).val().trim()) {
                               emptyExistingTrimLevel = true;
                               return false;
                           }
@@ -82,7 +82,6 @@
                   // New trim levels
                   if ($(".trimlevel").length > 0) {
                       $(".trimlevel").each(function() {
-                          console.log($(this));
                           var trimLevel = {name: $(this).val()};
                           car.trimLevels.push(trimLevel);
                       });

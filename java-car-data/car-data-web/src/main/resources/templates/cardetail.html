@@ -26,13 +26,9 @@
                   $("#model").text(data.model);
 
                   data.trimLevels.sort(sortTrimLevels);
-                  var trimLevelsArray = [];
-                  for (var i=0; i<data.trimLevels.length; i++) {
-                      trimLevelsArray.push(data.trimLevels[i].name);
-                  }
 
-                  $.each(trimLevelsArray, function(i, item) {
-                      var div = $('<div></div>').text(item);
+                  $.each(data.trimLevels, function(i, item) {
+                      var div = $('<div></div>').text(item.name);
                       $("#trimlevels").append(div);
                   });
               });
