@@ -9,14 +9,14 @@ Python Django, Java Spring Boot and Android Demo
 More details of the other components being used:
 
 Django Version:
-- Django Oauth Toolkit
+- Django OAuth Toolkit
 - MySQL database
 - AngularJS
 - Bootstrap
 - Note: this project also requires additional steps of manually creating the Django user(s) and an OAuth2 client application entry
 
 Spring Boot Version:
-- Spring Oauth2
+- Spring OAuth2
 - Spring Rest Controller
 - Spring Data Repositories
 - MySQL database
