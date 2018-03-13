@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.By;
@@ -22,11 +23,14 @@ public class AddCarPage {
     @FindBy(id = "model")
     private WebElement modelInput;
 
-    @FindBy(id = "trimlevels")
-    private WebElement trimLevelsTextArea;
+    @FindBy(className = "trimlevel")
+    private List<WebElement> trimLevelInputs;
 
-    @FindBy(id = "addcarbutton")
-    private WebElement addCarButton;
+    @FindBy(id = "addtrimlevelbutton")
+    private WebElement addTrimLevelButton;
+
+    @FindBy(id = "submitcarbutton")
+    private WebElement submitCarButton;
 
     public AddCarPage(WebDriver driver) {
         this.driver = driver;
@@ -46,11 +50,19 @@ public class AddCarPage {
     }
 
     public void typeTrimLevels(String trimLevels) {
-        trimLevelsTextArea.sendKeys(trimLevels);
+        String[] trimLevelArray = trimLevels.split("\n");
+
+        for (int i=1; i < trimLevelArray.length; i++) {
+            addTrimLevelButton.click();
+        }
+
+        for (int i=0; i < trimLevelArray.length; i++) {
+            trimLevelInputs.get(i).sendKeys(trimLevelArray[i]);
+        }
     }
 
-    public void clickAddCarButton() {
-        addCarButton.click();
+    public void clickSubmitCarButton() {
+        submitCarButton.click();
     }
 
     public void addCar(Map<String, String> carMap) {
@@ -59,13 +71,13 @@ public class AddCarPage {
         typeModel(carMap.get("model"));
         typeTrimLevels(carMap.get("trimLevels"));
 
-        clickAddCarButton();
+        clickSubmitCarButton();
 
         WebDriverWait wait = new WebDriverWait(driver, 5);
         wait.until(ExpectedConditions.alertIsPresent());
         driver.switchTo().alert().accept();
 
         // Wait for javascript redirect
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='maincontent']//table")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='maincontent']//table[@id='carstable']")));
     }
 }

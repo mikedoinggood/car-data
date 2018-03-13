@@ -2,9 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
-import org.apache.commons.text.RandomStringGenerator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,14 +11,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import static org.apache.commons.text.CharacterPredicates.DIGITS;
-import static org.apache.commons.text.CharacterPredicates.LETTERS;
 import static org.junit.Assert.*;
 
 public class AddCarsTest {
 
     private WebDriver driver;
+    private MainPage mainPage;
     private List<Map<String, String>> carMapList = new ArrayList<Map<String, String>>();
+    private CarDataUtility carDataUtility = new CarDataUtility();
 
     @Before
     public void setup() {
@@ -29,7 +27,7 @@ public class AddCarsTest {
         carMap1.put("year", "2017");
         carMap1.put("make", "Honda");
         carMap1.put("model", "Civic");
-        carMap1.put("trimLevels", generateRandomTrimLevels());
+        setupTrimLevels(carMap1);
         carMap1.put("found", "false");
         carMapList.add(carMap1); 
 
@@ -38,7 +36,7 @@ public class AddCarsTest {
         carMap2.put("year", "2016");
         carMap2.put("make", "Toyota");
         carMap2.put("model", "Corolla");
-        carMap2.put("trimLevels", generateRandomTrimLevels());
+        setupTrimLevels(carMap2);
         carMap2.put("found", "false");
         carMapList.add(carMap2); 
 
@@ -47,7 +45,7 @@ public class AddCarsTest {
         carMap3.put("year", "2013");
         carMap3.put("make", "Ford");
         carMap3.put("model", "Explorer");
-        carMap3.put("trimLevels", generateRandomTrimLevels());
+        setupTrimLevels(carMap3);
         carMap3.put("found", "false");
         carMapList.add(carMap3); 
 
@@ -60,6 +58,7 @@ public class AddCarsTest {
     @Test
     public void doAddCarsTest() {
         login();
+        mainPage = new MainPage(driver);
         addCars();
         checkCars();
     }
@@ -76,79 +75,40 @@ public class AddCarsTest {
 
     private void addCars() {
         for (Map<String, String> carMap : carMapList) {
-            driver.findElement(By.linkText("Add Car")).click();
+            mainPage.clickAddCarLink();
             AddCarPage addCarPage = new AddCarPage(driver);
             addCarPage.addCar(carMap);
-            System.out.println("Added car: " + getCarString(carMap));
+            System.out.println("Added car: " + carDataUtility.getCarString(carMap));
         }
     }
 
     private void checkCars() {
-        MainPage mainPage = new MainPage(driver);
         List<WebElement> carRows = mainPage.getCarRows();
 
         for (WebElement row : carRows) {
             List<WebElement> rowColumns = row.findElements(By.xpath(".//td"));
 
             for (Map<String, String> carMap : carMapList) {
-                if (checkMakeModelYear(rowColumns, carMap) && checkTrimLevels(rowColumns, carMap)) {
+                if (mainPage.checkMakeModelYear(rowColumns, carMap) && mainPage.checkTrimLevels(rowColumns, carMap)) {
                     carMap.put("found", "true");
-                    System.out.println("Found car: " + getCarString(carMap));
+                    System.out.println("Found car: " + carDataUtility.getCarString(carMap));
                     break;
                 }
             }
         }
 
         for (Map<String, String> carMap : carMapList) {
-            assertTrue("Could not find car: " + getCarString(carMap), Boolean.valueOf(carMap.get("found")));
+            assertTrue("Could not find car: " + carDataUtility.getCarString(carMap), Boolean.valueOf(carMap.get("found")));
         }
     }
 
-    private boolean checkMakeModelYear(List<WebElement> rowColumns, Map<String, String> carMap) {
-        if (rowColumns.get(0).getText().equals(carMap.get("year")) &&
-            rowColumns.get(1).getText().equals(carMap.get("make")) &&
-            rowColumns.get(2).getText().equals(carMap.get("model"))) {
+    private void setupTrimLevels(Map<String, String> carMap) {
+        CarDataUtility utility = new CarDataUtility();
 
-            return true;
-        }
+        String randomTrim1 = utility.generateRandomTrimLevel();
+        String randomTrim2 = utility.generateRandomTrimLevel();
+        String randomTrim3 = utility.generateRandomTrimLevel();
 
-        return false;
-    }
-
-    private boolean checkTrimLevels(List<WebElement> rowColumns, Map<String, String> carMap) {
-        String trimLevels = carMap.get("trimLevels");
-        String[] trimLevelsArray = trimLevels.split("\n");
-
-        for (String trimLevel : trimLevelsArray) {
-            String tableTrimLevelsString = rowColumns.get(3).getText();            
-            String regexString = ".*\\b" + Pattern.quote(trimLevel) + "\\b.*";
-
-            if (!tableTrimLevelsString.matches(regexString)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private String getCarString(Map<String, String> carMap) {
-        return carMap.get("year") + " " +
-            carMap.get("make") + " " +
-            carMap.get("model") + 
-            " With trim levels: " + carMap.get("trimLevels").replaceAll("\n", ",");
-    }
-
-    private String generateRandomTrimLevels() {
-        int length = 5;
-        RandomStringGenerator generator = new RandomStringGenerator.Builder()
-            .withinRange('0', 'z')
-            .filteredBy(LETTERS, DIGITS)
-            .build();
-
-        String randomTrim1 = generator.generate(length);
-        String randomTrim2 = generator.generate(length);
-        String randomTrim3 = generator.generate(length);
-
-        return randomTrim1 + "\n" + randomTrim2 + "\n" + randomTrim3;
+        carMap.put("trimLevels", randomTrim1 + "\n" + randomTrim2 + "\n" + randomTrim3);
     }
 }
