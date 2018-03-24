@@ -10,7 +10,7 @@ More details of the other components being used:
 
 Django Version:
 - Django OAuth Toolkit
-- MySQL database
+- MySQL
 - AngularJS
 - Bootstrap
 - Note: this project also requires additional steps of manually creating the Django user(s) and an OAuth2 client application entry
@@ -19,7 +19,8 @@ Spring Boot Version:
 - Spring OAuth2
 - Spring Rest Controller
 - Spring Data Repositories
-- MySQL database
+- MySQL
+- Redis
 - Thymeleaf
 - Bootstrap
 - jQuery
