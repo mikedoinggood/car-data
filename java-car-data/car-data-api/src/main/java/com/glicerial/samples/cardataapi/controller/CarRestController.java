@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -19,19 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.glicerial.samples.cardataapi.entity.Car;
 import com.glicerial.samples.cardataapi.entity.TrimLevel;
 import com.glicerial.samples.cardataapi.repository.CarRepository;
-import com.glicerial.samples.cardataapi.repository.TrimLevelRepository;
 
 
 @RestController
 public class CarRestController {
 
     private final CarRepository carRepository;
-    private final TrimLevelRepository trimLevelRepository;
 
     @Autowired
-    public CarRestController(CarRepository carRepository, TrimLevelRepository trimLevelRepository) {
+    public CarRestController(CarRepository carRepository) {
         this.carRepository = carRepository;
-        this.trimLevelRepository = trimLevelRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = { "/api/cars", "/resources/cars" }, produces = {MediaType.APPLICATION_JSON_VALUE, "application/json"})
@@ -64,26 +63,31 @@ public class CarRestController {
 
         if (existingCar == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).build();
-        } else {
-            existingCar.setYear(submittedCar.getYear());
-            existingCar.setMake(submittedCar.getMake());
-            existingCar.setModel(submittedCar.getModel());
-
-            Set<TrimLevel> existingCarTrimLevels = existingCar.getTrimLevels();
-            Set<TrimLevel> submittedCarTrimLevels = submittedCar.getTrimLevels();
-
-            if (submittedCarTrimLevels == null) {
-                existingCarTrimLevels.clear();
-            } else {
-                // Deletes
-                deleteTrimLevels(existingCarTrimLevels, submittedCarTrimLevels);
-
-                // Updates
-                updateTrimLevels(existingCar, existingCarTrimLevels, submittedCarTrimLevels);
-            }
-
-            carRepository.save(existingCar);
         }
+
+        if (!validateCar(submittedCar)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).build();
+        }
+
+
+        existingCar.setYear(submittedCar.getYear());
+        existingCar.setMake(submittedCar.getMake());
+        existingCar.setModel(submittedCar.getModel());
+
+        Set<TrimLevel> existingCarTrimLevels = existingCar.getTrimLevels();
+        Set<TrimLevel> submittedCarTrimLevels = submittedCar.getTrimLevels();
+
+        if (submittedCarTrimLevels == null) {
+            existingCarTrimLevels.clear();
+        } else {
+            // Deletes
+            deleteTrimLevels(existingCarTrimLevels, submittedCarTrimLevels);
+
+            // Updates
+            updateTrimLevels(existingCar, existingCarTrimLevels, submittedCarTrimLevels);
+        }
+
+        carRepository.save(existingCar);
 
         return ResponseEntity.ok(existingCar);
     }
@@ -100,8 +104,12 @@ public class CarRestController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = { "api/cars", "/resources/cars" }, produces = {MediaType.APPLICATION_JSON_VALUE, "application/json"})
-    Car addCar(@RequestBody Car car) {
-        Set<TrimLevel> trimLevels = car.getTrimLevels();
+    ResponseEntity<?> addCar(@RequestBody Car submittedCar) {
+        if (!validateCar(submittedCar)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).build();
+        }
+
+        Set<TrimLevel> trimLevels = submittedCar.getTrimLevels();
 
         if (trimLevels != null) {
             Iterator<TrimLevel> iterator = trimLevels.iterator();
@@ -109,17 +117,39 @@ public class CarRestController {
             while (iterator.hasNext()) {
                 TrimLevel trimLevel = iterator.next();
 
-                if (trimLevel.getName().trim().equals("")) {
+                if (StringUtils.isBlank(trimLevel.getName())) {
                     iterator.remove();
                 } else {
-                    trimLevel.setCar(car);
+                    trimLevel.setCar(submittedCar);
                 }
             }
         }
 
-        carRepository.save(car);
+        carRepository.save(submittedCar);
 
-        return car;
+        return ResponseEntity.ok(submittedCar);
+    }
+
+    private boolean validateCar(Car submittedCar) {
+        if (StringUtils.isBlank(submittedCar.getMake()) || StringUtils.isBlank(submittedCar.getModel())) {
+            return false;
+        }
+
+        Set<TrimLevel> submittedCarTrimLevels = submittedCar.getTrimLevels();
+
+        if (submittedCarTrimLevels != null) {
+            Iterator<TrimLevel> submittedCarTrimLevelsIterator = submittedCarTrimLevels.iterator();
+
+            while (submittedCarTrimLevelsIterator.hasNext()) {
+                TrimLevel submittedTrimLevel = submittedCarTrimLevelsIterator.next();
+
+                if (submittedTrimLevel.getId() != null && StringUtils.isBlank(submittedTrimLevel.getName())) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private void deleteTrimLevels(Set<TrimLevel> existingCarTrimLevels, Set<TrimLevel> submittedCarTrimLevels) {
@@ -152,7 +182,7 @@ public class CarRestController {
 
             // Adds
             if (submittedTrimLevel.getId() == null) {
-                if (!submittedTrimLevel.getName().trim().equals("")) {
+                if (!StringUtils.isBlank(submittedTrimLevel.getName())) {
                     submittedTrimLevel.setCar(existingCar);
                     existingCar.getTrimLevels().add(submittedTrimLevel);
                 }
