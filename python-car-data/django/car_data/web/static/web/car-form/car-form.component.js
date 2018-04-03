@@ -45,7 +45,7 @@ angular.
             // Check for updated trim level that's been changed to empty
             for (var i=0; i < car.trimLevels.length; i++) {
               if (car.trimLevels[i].id && !car.trimLevels[i].name) {
-                $window.alert("Found a trim level that was changed to no value.\nPlease enter a value or delete the trim level.")
+                $window.alert("Found a trim level that was changed to no value.\nPlease enter a value or delete the trim level.");
                 self.submitDisabled = false;
                 return;
               }
