@@ -24,8 +24,11 @@ def cars_post(request):
     data = json.loads(request.body)
     year = data.get('year')
     make = data.get('make')
-    model = data.get('model')
+    model = data.get('model', "")
     trim_levels = data.get('trimLevels')
+
+    if not year or not make:
+        return HttpResponse(status=400, content_type='application/json')
 
     with transaction.atomic():
         car = Car.objects.create(year=year, make=make, model=model)
@@ -56,10 +59,14 @@ def car_update_put(self, request, *args, **kwargs):
         return HttpResponse(status=404, content_type='application/json')
 
     data = json.loads(request.body)
+
     car.year = data.get('year')
     car.make = data.get('make')
     car.model = data.get('model')
     trim_levels = data.get('trimLevels')
+
+    if not car.year or not car.make:
+        return HttpResponse(status=400, content_type='application/json')
 
     with transaction.atomic():
         car.save()
@@ -68,15 +75,15 @@ def car_update_put(self, request, *args, **kwargs):
             if trim_level.get('id'):
                 if trim_level.get('name'):
                     try:
-                        saved_trim_level = TrimLevel.objects.get(pk=trim_level['id'])
+                        existing_trim_level = TrimLevel.objects.get(pk=trim_level['id'])
                     except TrimLevel.DoesNotExist as e:
                         return HttpResponse(status=404, content_type='application/json')
 
                     if trim_level.get('delete'):
-                        saved_trim_level.delete()
+                        existing_trim_level.delete()
                     else:
-                        saved_trim_level.name = trim_level['name']
-                        saved_trim_level.save()
+                        existing_trim_level.name = trim_level['name']
+                        existing_trim_level.save()
                 else:
                     return HttpResponse(status=400, content_type='application/json')
             else:
