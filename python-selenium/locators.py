@@ -13,5 +13,6 @@ class AddCarPageLocators(object):
     YEAR_INPUT = (By.ID, "year")
     MAKE_INPUT = (By.ID, "make")
     MODEL_INPUT = (By.ID, "model")
-    TRIM_LEVELS_TEXT_AREA = (By.ID, "trimlevels")
-    ADD_CAR_BUTTON = (By.ID, "addcarbutton")
+    TRIM_LEVEL_INPUTS = (By.CLASS_NAME, "trimlevel")
+    ADD_TRIM_LEVEL_BUTTON = (By.ID, "addtrimlevelbutton")
+    SUBMIT_CAR_BUTTON = (By.ID, "submitcarbutton")

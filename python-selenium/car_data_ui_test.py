@@ -12,7 +12,6 @@ from main_page import MainPage
 import logging
 import logging.handlers
 import random
-import re
 import string
 import unittest
 
@@ -53,6 +52,8 @@ class AddCars(unittest.TestCase):
         self.driver.set_window_size(1440, 900)
         self.driver.get("http://localhost:8082")
 
+        self.main_page = MainPage(self.driver)
+
     def test_add_cars(self):
         self.login()
         self.add_cars()
@@ -72,8 +73,7 @@ class AddCars(unittest.TestCase):
 
     def add_cars(self):
         for car in self.car_array:
-            main_page = MainPage(self.driver)
-            main_page.click_add_car_link()
+            self.main_page.click_add_car_link()
             add_car_page = AddCarPage(self.driver)
             add_car_page.add_car(car)
 
@@ -82,28 +82,15 @@ class AddCars(unittest.TestCase):
 
             LOG.info("Added car: %s", self.get_car_string(car))
 
-    def check_year_make_model(self, car, td_year, td_make, td_model):
-        if car['year'] == td_year.text and car['make'] == td_make.text and car['model'] == td_model.text:
-            return True
-
-    def check_trim_levels(self, car, td_trim_levels):
-        for trim in car['trim_levels']:
-            regex = r"\b" + re.escape(trim) + r"\b"
-            if not re.search(regex, td_trim_levels.text):
-                return False
-
-        return True
-
     def check_cars(self):
         LOG.info("Checking cars...")
-        wait = WebDriverWait(self.driver, 10)
-        car_rows = wait.until(expected_conditions.presence_of_all_elements_located(MainPageLocators.CAR_ROWS))
+        car_rows = self.main_page.get_car_rows()
 
         for row in car_rows:
             td_elements = row.find_elements_by_css_selector("td")
 
             for car in self.car_array:
-                if self.check_year_make_model(car, td_elements[0], td_elements[1], td_elements[2]) and self.check_trim_levels(car, td_elements[3]):
+                if self.main_page.check_year_make_model(car, td_elements) and self.main_page.check_trim_levels(car, td_elements[3]):
                     car['found'] = True
                     LOG.info("Found car: %s", self.get_car_string(car))
                     break
