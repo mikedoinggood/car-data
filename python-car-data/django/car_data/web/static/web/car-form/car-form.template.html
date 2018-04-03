@@ -20,22 +20,22 @@
     <div>
       <label>Trim Levels (1 per field):</label>
       <div ng-repeat="trim in $ctrl.car.trimLevels" ng-hide="trim.delete">
-      <div class="input-group">
-        <input class="form-control" type="text" ng-model="trim.name"/>
-        <span class="input-group-btn">
-          <button class="btn btn-default" ng-if="trim.id" ng-click="$ctrl.deleteTrimLevel($index)">Delete</button>
-        </span>
-      </div>
+        <div class="input-group">
+          <input class="form-control trimlevel" type="text" ng-model="trim.name"/>
+          <span class="input-group-btn">
+            <button class="btn btn-default" ng-if="trim.id" ng-click="$ctrl.deleteTrimLevel($index)">Delete</button>
+          </span>
+        </div>
       </div>
       <br>
-      <button class="btn btn-default pull-right" ng-click="$ctrl.addTrimLevel()">Add Another Trim Level</button>
+      <button class="btn btn-default pull-right" id="addtrimlevelbutton" ng-click="$ctrl.addTrimLevel()">Add Another Trim Level</button>
     </div>
     <br>
     <br>
     <br>
     <hr>
     <div class="form-group">
-      <button type="button" class="btn btn-primary" ng-disabled="$ctrl.submitDisabled" ng-click="$ctrl.submit($ctrl.car)">Submit</button>
+      <button type="button" class="btn btn-primary" id="submitcarbutton" ng-disabled="$ctrl.submitDisabled" ng-click="$ctrl.submit($ctrl.car)">Submit</button>
     </div>
   </form>
 </div>
