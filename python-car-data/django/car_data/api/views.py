@@ -24,18 +24,19 @@ def cars_post(request):
     data = json.loads(request.body)
     year = data.get('year')
     make = data.get('make')
-    model = data.get('model', "")
+    model = data.get('model')
     trim_levels = data.get('trimLevels')
 
-    if not year or not make:
+    if not year or not make or not model:
         return HttpResponse(status=400, content_type='application/json')
 
     with transaction.atomic():
         car = Car.objects.create(year=year, make=make, model=model)
 
-        for trim_level in trim_levels:
-            if trim_level['name']:
-                car.trimlevel_set.add(TrimLevel(car=car, name=trim_level['name']), bulk=False)
+        if trim_levels:
+            for trim_level in trim_levels:
+                if trim_level['name']:
+                    car.trimlevel_set.add(TrimLevel(car=car, name=trim_level['name']), bulk=False)
 
     saved_car = Car.objects.get(id=car.id)
     car_dict = convert_car_to_dict(saved_car)
@@ -65,30 +66,31 @@ def car_update_put(self, request, *args, **kwargs):
     car.model = data.get('model')
     trim_levels = data.get('trimLevels')
 
-    if not car.year or not car.make:
+    if not car.year or not car.make or not car.model:
         return HttpResponse(status=400, content_type='application/json')
 
     with transaction.atomic():
         car.save()
 
-        for trim_level in trim_levels:
-            if trim_level.get('id'):
-                if trim_level.get('name'):
-                    try:
-                        existing_trim_level = TrimLevel.objects.get(pk=trim_level['id'])
-                    except TrimLevel.DoesNotExist as e:
-                        return HttpResponse(status=404, content_type='application/json')
+        if trim_levels:
+            for trim_level in trim_levels:
+                if trim_level.get('id'):
+                    if trim_level.get('name'):
+                        try:
+                            existing_trim_level = TrimLevel.objects.get(pk=trim_level['id'])
+                        except TrimLevel.DoesNotExist as e:
+                            return HttpResponse(status=404, content_type='application/json')
 
-                    if trim_level.get('delete'):
-                        existing_trim_level.delete()
+                        if trim_level.get('delete'):
+                            existing_trim_level.delete()
+                        else:
+                            existing_trim_level.name = trim_level['name']
+                            existing_trim_level.save()
                     else:
-                        existing_trim_level.name = trim_level['name']
-                        existing_trim_level.save()
+                        return HttpResponse(status=400, content_type='application/json')
                 else:
-                    return HttpResponse(status=400, content_type='application/json')
-            else:
-                if trim_level['name']:
-                    car.trimlevel_set.add(TrimLevel(car=car, name=trim_level['name']), bulk=False)
+                    if trim_level.get('name'):
+                        car.trimlevel_set.add(TrimLevel(car=car, name=trim_level['name']), bulk=False)
 
     saved_car = Car.objects.get(id=car.id)
     car_dict = convert_car_to_dict(saved_car)
