@@ -13,6 +13,7 @@
     <form id="loginform" method="post" action="{% url 'web:login' %}">
       {% csrf_token %}
       <h3>Login</h3>
+      <h5>&lpar;Login with Username &equals; &quot;user&quot;, Password &equals; &quot;password&quot;&rpar;</h5>
       <br/>
       <div class="form-group">
         <label for="username">Username:</label>
