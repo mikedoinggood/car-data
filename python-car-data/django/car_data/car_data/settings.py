@@ -42,12 +42,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'oauth2_provider.backends.OAuth2Backend',
+    # Uncomment following if you want to access the admin
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # If you use SessionAuthenticationMiddleware, be sure it appears before OAuth2TokenMiddleware.
+    # SessionAuthenticationMiddleware is NOT required for using django-oauth-toolkit.
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
