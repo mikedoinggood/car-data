@@ -18,6 +18,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.*;
@@ -265,14 +266,25 @@ public class CarRestControllerTest {
 
     @Test
     public void addCarNewEmptyTrimLevel() throws Exception {
-        ObjectNode trimLevelNode1 = mapper.createObjectNode();
-        trimLevelNode1.put("name",  "EX");
-        ObjectNode trimLevelNode2 = mapper.createObjectNode();
-        trimLevelNode2.put("name",  "");
-        ArrayNode arrayNode = mapper.createArrayNode();
-        arrayNode.add(trimLevelNode1);
-        arrayNode.add(trimLevelNode2);
-        carNode.putArray("trimLevels").addAll(arrayNode);
+        ObjectNode trimLevelNode = mapper.createObjectNode();
+        trimLevelNode.put("name",  "");
+        ArrayNode arrayNode = (ArrayNode) carNode.get("trimLevels");
+        arrayNode.add(trimLevelNode);
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(post(carsUrl)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addCarExtraData() throws Exception {
+        ObjectNode extraNode = mapper.createObjectNode();
+        extraNode.put("something", "extra");
+        carNode.set("extra", extraNode);
         String carJson = carNode.toString();
         System.out.println("carJson:\n" + carJson);
 
@@ -369,9 +381,8 @@ public class CarRestControllerTest {
         // Update car node to have trim level array having a trim level with valid id but no name
         ObjectNode trimLevelNode = mapper.createObjectNode();
         trimLevelNode.put("id",  existingTrimLevelId);
-        ArrayNode arrayNode = mapper.createArrayNode();
+        ArrayNode arrayNode = (ArrayNode) carNode.get("trimLevels");
         arrayNode.add(trimLevelNode);
-        carNode.putArray("trimLevels").addAll(arrayNode);
         String carJson = carNode.toString();
         System.out.println("carJson:\n" + carJson);
 
@@ -393,9 +404,8 @@ public class CarRestControllerTest {
         ObjectNode trimLevelNode = mapper.createObjectNode();
         trimLevelNode.put("id",  existingTrimLevelId);
         trimLevelNode.put("name",  "");
-        ArrayNode arrayNode = mapper.createArrayNode();
+        ArrayNode arrayNode = (ArrayNode) carNode.get("trimLevels");
         arrayNode.add(trimLevelNode);
-        carNode.putArray("trimLevels").addAll(arrayNode);
         String carJson = carNode.toString();
         System.out.println("carJson:\n" + carJson);
 
@@ -407,7 +417,7 @@ public class CarRestControllerTest {
     }
 
     @Test
-    public void editCarNotFoundTrimLevel() throws Exception {
+    public void editCarTrimLevelNotFound() throws Exception {
         Car existingCar = carList.get(0);
         Long carId = existingCar.getId();
 
@@ -415,9 +425,8 @@ public class CarRestControllerTest {
         ObjectNode trimLevelNode = mapper.createObjectNode();
         trimLevelNode.put("id",  999);
         trimLevelNode.put("name",  "Invalid");
-        ArrayNode arrayNode = mapper.createArrayNode();
+        ArrayNode arrayNode = (ArrayNode) carNode.get("trimLevels");
         arrayNode.add(trimLevelNode);
-        carNode.putArray("trimLevels").addAll(arrayNode);
         String carJson = carNode.toString();
         System.out.println("carJson:\n" + carJson);
 
@@ -432,9 +441,58 @@ public class CarRestControllerTest {
                 .andExpect(jsonPath("$.year", is(expectedYear)))
                 .andExpect(jsonPath("$.make", is(expectedMake)))
                 .andExpect(jsonPath("$.model", is(expectedModel)))
-                .andExpect(jsonPath("$.trimLevels", hasSize(0)))
+                .andExpect(jsonPath("$.trimLevels", hasSize(2)))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void editCarTrimLevelOtherCar() throws Exception {
+        Car existingCar = carList.get(1);
+        Long carId = existingCar.getId();
+        Car otherExistingCar = carList.get(0);
+        TrimLevel otherExistingTrimLevel = getExistingTrimLevel(otherExistingCar);
+
+        // Update car node to have trim level array having a trim level with id of different car
+        ObjectNode trimLevelNode = mapper.createObjectNode();
+        trimLevelNode.put("id",  otherExistingTrimLevel.getId());
+        trimLevelNode.put("name",  "Other Car Trim Level Updated");
+        ArrayNode arrayNode = (ArrayNode) carNode.get("trimLevels");
+        arrayNode.add(trimLevelNode);
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        int expectedYear = carNode.get("year").asInt();
+        String expectedMake = carNode.get("make").asText();
+        String expectedModel = carNode.get("model").asText();
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.year", is(expectedYear)))
+                .andExpect(jsonPath("$.make", is(expectedMake)))
+                .andExpect(jsonPath("$.model", is(expectedModel)))
+                .andExpect(jsonPath("$.trimLevels", hasSize(2)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        // Check other car's trim level
+        MvcResult result = mockMvc.perform(get(carsUrl + otherExistingCar.getId())
+                .contentType(contentType))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String resultJsonString = result.getResponse().getContentAsString();
+        Car responseCar = mapper.readValue(resultJsonString, Car.class);
+
+        for (TrimLevel tl: responseCar.getTrimLevels()) {
+            if (otherExistingTrimLevel.getId().equals(tl.getId())) {
+                assertEquals(otherExistingTrimLevel.getName(), tl.getName());
+                break;
+            }
+        }
     }
 
     @Test
@@ -470,6 +528,25 @@ public class CarRestControllerTest {
     }
 
     @Test
+    public void editCarExtraData() throws Exception {
+        Car existingCar = carList.get(0);
+        Long carId = existingCar.getId();
+
+        ObjectNode extraNode = mapper.createObjectNode();
+        extraNode.put("something", "extra");
+        carNode.set("extra", extraNode);
+
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void deleteCar() throws Exception {
         Long idToDelete = carList.get(0).getId();
 
@@ -493,6 +570,7 @@ public class CarRestControllerTest {
 
         return iterator.next();
     }
+
     private String json(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
         mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
