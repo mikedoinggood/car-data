@@ -126,6 +126,16 @@ class CarDataTest(TestCase):
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
 
+    def test_add_car_extra_data(self):
+        self.car['extra'] = {
+            'something': 'extra'
+        }
+        response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
+
+        print("\nResponse:")
+        pprint(response.json())
+        self.assertEqual(response.status_code, 200)
+
     def test_edit_car(self):
         existing_car_id = self.car_list[0].id
         # Limit query set result to 1, get first element of that query set
@@ -199,7 +209,7 @@ class CarDataTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_edit_car_not_found_trim_level(self):
+    def test_edit_car_trim_level_not_found(self):
         existing_car_id = self.car_list[0].id
         self.car['trimLevels'].append({
                 'id': 999,
@@ -208,7 +218,34 @@ class CarDataTest(TestCase):
         )
         response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_car_trim_level_other_car(self):
+        existing_car_id = self.car_list[1].id
+        other_existing_car = self.car_list[0]
+        # Limit query set result to 1, get first element of that query set
+        other_existing_trim_level = other_existing_car.trimlevel_set.all()[:1][0]
+        self.car['trimLevels'].append({
+                'id': other_existing_trim_level.id,
+                'name': 'Other Car Trim Level Updated'
+            }
+        )
+        print("\nSubmitting:")
+        pprint(self.car)
+        response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
+        print("\nResponse for PUT request:")
+        pprint(response.json())
+        self.assertEqual(response.status_code, 200)
+
+        # Check other car's trim level
+        response_other_existing_car = self.client.get('/api/resources/cars/{}'.format(other_existing_car.id))
+        print("\nResponse for GET request:")
+        pprint(response_other_existing_car.json())
+        response_other_existing_trim_levels = response_other_existing_car.json()['trimLevels']
+        for trim_level in response_other_existing_trim_levels:
+            if trim_level['id'] == other_existing_trim_level.id:
+                self.assertEqual(trim_level['name'], other_existing_trim_level.name)
+                break
 
     def test_edit_car_new_trim_level(self):
         existing_car_id = self.car_list[0].id
@@ -221,6 +258,17 @@ class CarDataTest(TestCase):
     def test_edit_car_new_blank_trim_level(self):
         existing_car_id = self.car_list[0].id
         self.car['trimLevels'].append({})
+        response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
+
+        print("\nResponse:")
+        pprint(response.json())
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_car_extra_data(self):
+        existing_car_id = self.car_list[0].id
+        self.car['extra'] = {
+            'something': 'extra'
+        }
         response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
 
         print("\nResponse:")

@@ -77,9 +77,9 @@ def car_update_put(self, request, *args, **kwargs):
                 if trim_level.get('id'):
                     if trim_level.get('name'):
                         try:
-                            existing_trim_level = TrimLevel.objects.get(pk=trim_level['id'])
+                            existing_trim_level =  car.trimlevel_set.get(pk=trim_level.get('id'))
                         except TrimLevel.DoesNotExist as e:
-                            return HttpResponse(status=404, content_type='application/json')
+                            continue
 
                         if trim_level.get('delete'):
                             existing_trim_level.delete()
