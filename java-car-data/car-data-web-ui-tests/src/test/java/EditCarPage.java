@@ -32,7 +32,7 @@ public class EditCarPage {
     public EditCarPage(WebDriver driver) {
         this.driver = driver;
         WebDriverWait wait = new WebDriverWait(driver, 5);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editcar")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("trimlevels")));
         PageFactory.initElements(driver, this);
     }
 

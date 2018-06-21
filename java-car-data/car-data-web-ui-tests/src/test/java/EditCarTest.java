@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 
 import static org.junit.Assert.*;
@@ -31,10 +30,9 @@ public class EditCarTest {
         carMap.put("model", "Civic");
         setTrimLevels(carMap);
 
-        // May need following line if geckodriver not in your path
-        // System.setProperty("webdriver.gecko.driver", "/usr/local/bin");
-        driver = new FirefoxDriver();
-        driver.get("http://localhost:8082");
+        WebDriverUtility webDriverUtility = new WebDriverUtility();
+        driver = webDriverUtility.getNewWebDriver();
+        driver.get(webDriverUtility.getHomePage());
 
         login();
         mainPage = new MainPage(driver);
