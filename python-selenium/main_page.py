@@ -1,9 +1,12 @@
-from locators import MainPageLocators
-from page import BasePage
+import re
+
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
-import re
+from locators import MainPageLocators
+from page import BasePage
 
 class MainPage(BasePage):
     def click_add_car_link(self):
@@ -16,6 +19,22 @@ class MainPage(BasePage):
 
         return car_rows
 
+    def navigate_to_car_detail_page(self, car):
+        car_row = self.find_car_row(car)
+        row_columns = car_row.find_elements(By.XPATH, ".//td")
+        row_columns[0].find_element(By.TAG_NAME, "a").click()
+
+    def find_car_row(self, car):
+        car_rows = self.get_car_rows()
+
+        for row in car_rows:
+            row_columns = row.find_elements(By.XPATH, ".//td")
+
+            if self.check_year_make_model(car, row_columns) and self.check_trim_levels(car, row_columns[3]):
+                return row
+
+        raise NoSuchElementException
+
     def check_year_make_model(self, car, td_elements):
         year = td_elements[0].text
         make = td_elements[1].text
@@ -25,9 +44,7 @@ class MainPage(BasePage):
             return True
 
     def check_trim_levels(self, car, td_trim_levels):
-        for trim in car['trim_levels']:
-            regex = r"\b" + re.escape(trim) + r"\b"
-            if not re.search(regex, td_trim_levels.text):
-                return False
+        td_trim_levels_list = td_trim_levels.text.split(", ")
 
-        return True
+        if sorted(td_trim_levels_list) == sorted(car['trim_levels']):
+            return True
