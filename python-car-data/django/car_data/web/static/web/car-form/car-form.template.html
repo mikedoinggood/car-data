@@ -19,8 +19,8 @@
     </div>
     <div>
       <label>Trim Levels (1 per field):</label>
-      <div ng-repeat="trim in $ctrl.car.trimLevels" ng-hide="trim.delete">
-        <div class="input-group">
+      <div id="trimlevels">
+        <div class="input-group" ng-repeat="trim in $ctrl.car.trimLevels" ng-hide="trim.delete">
           <input class="form-control trimlevel" type="text" ng-model="trim.name"/>
           <span class="input-group-btn">
             <button class="btn btn-default" ng-if="trim.id" ng-click="$ctrl.deleteTrimLevel($index)">Delete</button>
