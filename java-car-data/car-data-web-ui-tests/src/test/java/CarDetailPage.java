@@ -32,7 +32,7 @@ public class CarDetailPage {
     public CarDetailPage(WebDriver driver) {
         this.driver = driver;
         WebDriverWait wait = new WebDriverWait(driver, 5);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cardetails")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("trimlevels")));
         PageFactory.initElements(driver, this);
     }
 

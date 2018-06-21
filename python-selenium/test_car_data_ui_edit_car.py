@@ -12,6 +12,7 @@ from edit_car_page import EditCarPage
 from logging_utility import get_logger
 from login_page import LoginPage
 from main_page import MainPage
+from web_driver_utility import WebDriverUtility
 
 """ Logging setup """
 LOG = get_logger(__name__)
@@ -31,9 +32,9 @@ class EditCar(unittest.TestCase):
 
         self.car['trim_levels'] = random_trim_levels
 
-        self.driver = webdriver.PhantomJS()
-        self.driver.set_window_size(1440, 900)
-        self.driver.get("http://localhost:8082")
+        web_driver_utility = WebDriverUtility()
+        self.driver = web_driver_utility.get_new_web_driver(WebDriverUtility.PHANTOMJS_DRIVER)
+        self.driver.get(web_driver_utility.get_home_page())
 
         self.main_page = MainPage(self.driver)
         self.login()
