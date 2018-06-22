@@ -1,8 +1,8 @@
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
-from locators import CarDetailPageLocators
-from page import BasePage
+from .locators import CarDetailPageLocators
+from .page import BasePage
 
 class CarDetailPage(BasePage):
     def __init__(self, driver):

@@ -1,3 +1,5 @@
+package com.glicerial.samples.cardata.web.uitests;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +11,10 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import com.glicerial.samples.cardata.web.uitests.page.AddCarPage;
+import com.glicerial.samples.cardata.web.uitests.page.LoginPage;
+import com.glicerial.samples.cardata.web.uitests.page.MainPage;
 
 import static org.junit.Assert.*;
 

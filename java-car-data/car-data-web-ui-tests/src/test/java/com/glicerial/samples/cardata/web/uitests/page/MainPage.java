@@ -1,3 +1,5 @@
+package com.glicerial.samples.cardata.web.uitests.page;
+
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -12,6 +14,9 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.glicerial.samples.cardata.web.uitests.CarDataUtility;
+
 
 public class MainPage {
 
