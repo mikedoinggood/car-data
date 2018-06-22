@@ -1,5 +1,5 @@
-from locators import LoginPageLocators
-from page import BasePage
+from .locators import LoginPageLocators
+from .page import BasePage
 
 class LoginPage(BasePage):
     def login(self, username, password):

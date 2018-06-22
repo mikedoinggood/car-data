@@ -1,3 +1,5 @@
+package com.glicerial.samples.cardata.web.uitests;
+
 import org.junit.runners.Suite;
 import org.junit.runner.RunWith;
 

@@ -1,3 +1,5 @@
+package com.glicerial.samples.cardata.web.uitests.page;
+
 import java.util.List;
 import java.util.Map;
 

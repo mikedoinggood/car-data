@@ -1,3 +1,5 @@
+package com.glicerial.samples.cardata.web.uitests;
+
 import static org.apache.commons.text.CharacterPredicates.DIGITS;
 import static org.apache.commons.text.CharacterPredicates.LETTERS;
 

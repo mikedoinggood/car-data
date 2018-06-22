@@ -1,12 +1,10 @@
-import re
-
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
-from locators import MainPageLocators
-from page import BasePage
+from .locators import MainPageLocators
+from .page import BasePage
 
 class MainPage(BasePage):
     def click_add_car_link(self):

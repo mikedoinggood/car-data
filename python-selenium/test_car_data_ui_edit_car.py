@@ -1,17 +1,16 @@
 import unittest
 
-from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from add_car_page import AddCarPage
 from car_data_utility import generate_random_trim_level, get_car_string
-from car_detail_page import CarDetailPage
-from edit_car_page import EditCarPage
 from logging_utility import get_logger
-from login_page import LoginPage
-from main_page import MainPage
+from pages.add_car_page import AddCarPage
+from pages.car_detail_page import CarDetailPage
+from pages.edit_car_page import EditCarPage
+from pages.login_page import LoginPage
+from pages.main_page import MainPage
 from web_driver_utility import WebDriverUtility
 
 """ Logging setup """
@@ -23,14 +22,8 @@ class EditCar(unittest.TestCase):
             'year': "2017",
             'make': "Honda",
             'model': "Civic",
+            'trim_levels': [generate_random_trim_level() for _ in range(3)],
         }
-        self.car['found'] = False
-
-        random_trim_levels = []
-        for _ in range(3):
-            random_trim_levels.append(generate_random_trim_level())
-
-        self.car['trim_levels'] = random_trim_levels
 
         web_driver_utility = WebDriverUtility()
         self.driver = web_driver_utility.get_new_web_driver(WebDriverUtility.PHANTOMJS_DRIVER)

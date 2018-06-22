@@ -3,7 +3,7 @@ from selenium import webdriver
 class WebDriverUtility():
     FIREFOX_DRIVER = 0
     PHANTOMJS_DRIVER = 1
-        
+
     def get_new_web_driver(self, driver_type):
         if driver_type == self.PHANTOMJS_DRIVER:
             driver = webdriver.PhantomJS()

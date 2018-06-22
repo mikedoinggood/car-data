@@ -1,14 +1,13 @@
 import unittest
 
-from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
-from add_car_page import AddCarPage
 from car_data_utility import generate_random_trim_level, get_car_string
 from logging_utility import get_logger
-from login_page import LoginPage
-from main_page import MainPage
+from pages.add_car_page import AddCarPage
+from pages.login_page import LoginPage
+from pages.main_page import MainPage
 from web_driver_utility import WebDriverUtility
 
 """ Logging setup """
@@ -34,12 +33,7 @@ class AddCars(unittest.TestCase):
 
         for car in self.car_list:
             car['found'] = False
-
-            random_trim_levels = []
-            for _ in range(3):
-                random_trim_levels.append(generate_random_trim_level())
-
-            car['trim_levels'] = random_trim_levels
+            car['trim_levels'] = [generate_random_trim_level() for _ in range(3)]
 
         web_driver_utility = WebDriverUtility()
         self.driver = web_driver_utility.get_new_web_driver(WebDriverUtility.PHANTOMJS_DRIVER)
