@@ -55,7 +55,7 @@ class CarDataTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_read_one_car_not_found(self):
-        response = self.client.get('/api/resources/cars/{}'.format(999))
+        response = self.client.get('/api/resources/cars/{}'.format(9999))
 
         self.assertEqual(response.status_code, 404)
 
@@ -153,7 +153,7 @@ class CarDataTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_edit_car_not_found(self):
-        response = self.client.put('/api/resources/cars/{}'.format(999), json.dumps(self.car), 'application/json')
+        response = self.client.put('/api/resources/cars/{}'.format(9999), json.dumps(self.car), 'application/json')
 
         self.assertEqual(response.status_code, 404)
 
@@ -212,7 +212,7 @@ class CarDataTest(TestCase):
     def test_edit_car_trim_level_not_found(self):
         existing_car_id = self.car_list[0].id
         self.car['trimLevels'].append({
-                'id': 999,
+                'id': 9999,
                 'name': 'Invalid'
             }
         )
@@ -282,6 +282,6 @@ class CarDataTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_delete_non_existing_car(self):
-        response = self.client.delete('/api/resources/cars/{}'.format(999), json.dumps(self.car), 'application/json')
+        response = self.client.delete('/api/resources/cars/{}'.format(9999), json.dumps(self.car), 'application/json')
 
         self.assertEqual(response.status_code, 404)
