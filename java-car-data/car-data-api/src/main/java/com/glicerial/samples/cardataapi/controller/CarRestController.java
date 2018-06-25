@@ -1,6 +1,7 @@
 package com.glicerial.samples.cardataapi.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -109,10 +110,13 @@ public class CarRestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).build();
         }
 
-        Set<TrimLevel> trimLevels = submittedCar.getTrimLevels();
+        Car newCar = new Car(submittedCar.getYear(), submittedCar.getMake(), submittedCar.getModel());
+        newCar.setTrimLevels(new HashSet<TrimLevel>());
 
-        if (trimLevels != null) {
-            Iterator<TrimLevel> iterator = trimLevels.iterator();
+        Set<TrimLevel> submittedTrimLevels = submittedCar.getTrimLevels();
+
+        if (submittedTrimLevels != null) {
+            Iterator<TrimLevel> iterator = submittedTrimLevels.iterator();
 
             while (iterator.hasNext()) {
                 TrimLevel trimLevel = iterator.next();
@@ -120,14 +124,15 @@ public class CarRestController {
                 if (StringUtils.isBlank(trimLevel.getName())) {
                     iterator.remove();
                 } else {
-                    trimLevel.setCar(submittedCar);
+                    trimLevel.setCar(newCar);
+                    newCar.getTrimLevels().add(trimLevel);
                 }
             }
         }
 
-        carRepository.save(submittedCar);
+        carRepository.save(newCar);
 
-        return ResponseEntity.ok(submittedCar);
+        return ResponseEntity.ok(newCar);
     }
 
     private boolean validateCar(Car submittedCar) {

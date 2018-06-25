@@ -38,8 +38,7 @@ def cars_post(request):
                 if trim_level['name']:
                     car.trimlevel_set.add(TrimLevel(car=car, name=trim_level['name']), bulk=False)
 
-    saved_car = Car.objects.get(id=car.id)
-    car_dict = convert_car_to_dict(saved_car)
+    car_dict = convert_car_to_dict(car)
 
     return HttpResponse(json.dumps(car_dict, indent=4), content_type='application/json')
 
@@ -92,8 +91,7 @@ def car_update_put(self, request, *args, **kwargs):
                     if trim_level.get('name'):
                         car.trimlevel_set.add(TrimLevel(car=car, name=trim_level['name']), bulk=False)
 
-    saved_car = Car.objects.get(id=car.id)
-    car_dict = convert_car_to_dict(saved_car)
+    car_dict = convert_car_to_dict(car)
 
     return HttpResponse(json.dumps(car_dict, indent=4), content_type='application/json')
 

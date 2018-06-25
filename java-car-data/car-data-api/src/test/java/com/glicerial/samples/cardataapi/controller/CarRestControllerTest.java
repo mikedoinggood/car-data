@@ -143,7 +143,7 @@ public class CarRestControllerTest {
 
     @Test
     public void readOneCarNotFound() throws Exception {
-        mockMvc.perform(get(carsUrl + 999))
+        mockMvc.perform(get(carsUrl + 9999))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -320,7 +320,7 @@ public class CarRestControllerTest {
     public void editCarNotFound() throws Exception {
         String carJson = carNode.toString();
 
-        mockMvc.perform(put(carsUrl + 999)
+        mockMvc.perform(put(carsUrl + 9999)
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
@@ -423,7 +423,7 @@ public class CarRestControllerTest {
 
         // Update car node to have trim level array having a trim level with id not belonging to car
         ObjectNode trimLevelNode = mapper.createObjectNode();
-        trimLevelNode.put("id",  999);
+        trimLevelNode.put("id",  9999);
         trimLevelNode.put("name",  "Invalid");
         ArrayNode arrayNode = (ArrayNode) carNode.get("trimLevels");
         arrayNode.add(trimLevelNode);
