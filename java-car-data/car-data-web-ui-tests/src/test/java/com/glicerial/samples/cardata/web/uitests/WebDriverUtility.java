@@ -16,4 +16,8 @@ public class WebDriverUtility {
     public String getHomePage() {
         return "http://localhost:8082";
     }
+
+    public String getAddCarPage() {
+        return getHomePage() + "/addcar";
+    }
 }

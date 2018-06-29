@@ -54,6 +54,10 @@ public class CarDetailPage {
         return trimLevels;
     }
 
+    public WebElement getEditCarLink() {
+        return editCarLink;
+    }
+
     public void clickEditCarLink() {
         editCarLink.click();
     }

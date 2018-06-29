@@ -15,11 +15,14 @@ class CarDetailPage(BasePage):
         self.year = self.driver.find_element(*CarDetailPageLocators.YEAR)
         self.make = self.driver.find_element(*CarDetailPageLocators.MAKE)
         self.model = self.driver.find_element(*CarDetailPageLocators.MODEL)
+        self.edit_car_link = self.driver.find_element(*CarDetailPageLocators.EDIT_CAR_LINK)
+        self.delete_car_button = self.driver.find_element(*CarDetailPageLocators.DELETE_CAR_BUTTON)
+
+    def get_edit_car_link(self):
+        return self.edit_car_link
 
     def click_edit_car_link(self):
-        edit_car_link = self.driver.find_element(*CarDetailPageLocators.EDIT_CAR_LINK)
-        edit_car_link.click()
+        self.edit_car_link.click()
 
     def click_delete_car_button(self):
-        delete_car_button = self.driver.find_element(*CarDetailPageLocators.DELETE_CAR_BUTTON)
-        delete_car_button.click()
+        self.delete_car_button.click()
