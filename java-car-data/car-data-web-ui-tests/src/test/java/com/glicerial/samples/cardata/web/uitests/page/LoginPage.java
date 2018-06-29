@@ -33,8 +33,8 @@ public class LoginPage {
     }
 
     public void login(String username, String password) {
-        typeUserName("user");
-        typePassword("password");
+        typeUserName(username);
+        typePassword(password);
         clickSignInButton();
     }
 }

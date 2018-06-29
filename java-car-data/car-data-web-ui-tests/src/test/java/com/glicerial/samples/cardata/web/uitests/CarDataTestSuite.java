@@ -9,7 +9,8 @@ import org.junit.runner.RunWith;
     AddCarsTest.class,
     CarDetailTest.class,
     DeleteCarTest.class,
-    EditCarTest.class
+    EditCarTest.class,
+    LoginTest.class
 })
 
 public class CarDataTestSuite {

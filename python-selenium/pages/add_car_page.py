@@ -5,11 +5,14 @@ from .locators import AddCarPageLocators
 from .page import BasePage
 
 class AddCarPage(BasePage):
-    def add_car(self, car):
+    def __init__(self, driver):
+        super().__init__(driver)
+
         # Wait for submit to be present, others should then also be present
         wait = WebDriverWait(self.driver, 10)
-        submit_car_button = wait.until(expected_conditions.presence_of_element_located(AddCarPageLocators.SUBMIT_CAR_BUTTON))
+        self.submit_car_button = wait.until(expected_conditions.presence_of_element_located(AddCarPageLocators.SUBMIT_CAR_BUTTON))
 
+    def add_car(self, car):
         year_input = self.driver.find_element(*AddCarPageLocators.YEAR_INPUT)
         make_input = self.driver.find_element(*AddCarPageLocators.MAKE_INPUT)
         model_input = self.driver.find_element(*AddCarPageLocators.MODEL_INPUT)
@@ -29,4 +32,4 @@ class AddCarPage(BasePage):
             trim_level = car['trim_levels'][i]
             trim_levels_inputs[i].send_keys(trim_level)
 
-        submit_car_button.click()
+        self.submit_car_button.click()
