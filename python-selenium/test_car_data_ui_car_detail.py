@@ -1,7 +1,6 @@
 import unittest
 
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
 from car_data_utility import generate_random_trim_level, get_car_string
@@ -25,7 +24,7 @@ class CarDetail(unittest.TestCase):
         }
 
         web_driver_utility = WebDriverUtility()
-        self.driver = web_driver_utility.get_new_web_driver(WebDriverUtility.PHANTOMJS_DRIVER)
+        self.driver = web_driver_utility.get_new_web_driver()
         self.driver.get(web_driver_utility.get_home_page())
 
         self.main_page = MainPage(self.driver)
@@ -53,9 +52,6 @@ class CarDetail(unittest.TestCase):
         self.main_page.click_add_car_link()
         add_car_page = AddCarPage(self.driver)
         add_car_page.add_car(self.car)
-
-        # Press RETURN to close alert
-        ActionChains(self.driver).send_keys(Keys.RETURN).perform()
 
         LOG.info("Added car: %s", get_car_string(self.car))
 

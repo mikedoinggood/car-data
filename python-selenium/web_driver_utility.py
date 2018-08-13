@@ -1,15 +1,14 @@
+import os
+
 from selenium import webdriver
 
 class WebDriverUtility():
     FIREFOX_DRIVER = 0
     PHANTOMJS_DRIVER = 1
 
-    def get_new_web_driver(self, driver_type):
-        if driver_type == self.PHANTOMJS_DRIVER:
-            driver = webdriver.PhantomJS()
-            driver.set_window_size(1440, 900)
-        elif driver_type == self.FIREFOX_DRIVER:
-            driver = webdriver.Firefox()
+    def get_new_web_driver(self):
+        os.environ['MOZ_HEADLESS'] = '1'
+        driver = webdriver.Firefox()
 
         return driver
 

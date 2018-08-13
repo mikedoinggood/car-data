@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 
 class MainPageLocators():
     ADD_CARS_LINK = (By.LINK_TEXT, "Add Car")
-    CAR_ROWS = (By.XPATH, "//tbody[@id='tablebody']/tr")
+    CAR_ROWS = (By.XPATH, "//div[@class='maincontent']//table[@id='carstable']/tbody/tr")
 
 class LoginPageLocators():
     USERNAME_INPUT = (By.ID, "username")

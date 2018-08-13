@@ -1,6 +1,5 @@
 import unittest
 
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -26,7 +25,7 @@ class EditCar(unittest.TestCase):
         }
 
         web_driver_utility = WebDriverUtility()
-        self.driver = web_driver_utility.get_new_web_driver(WebDriverUtility.PHANTOMJS_DRIVER)
+        self.driver = web_driver_utility.get_new_web_driver()
         self.driver.get(web_driver_utility.get_home_page())
 
         self.main_page = MainPage(self.driver)
@@ -54,8 +53,9 @@ class EditCar(unittest.TestCase):
         self.edit_trim_levels(edit_car_page)
         edit_car_page.click_submit_car_button()
 
-        # Press RETURN to close alert
-        ActionChains(self.driver).send_keys(Keys.RETURN).perform()
+        # Accept alert
+        self.driver.switch_to.alert.accept()
+
         LOG.info("Edited car to: %s", get_car_string(self.car))
 
         self.assertIsNotNone(self.main_page.find_car_row(self.car))
@@ -67,8 +67,9 @@ class EditCar(unittest.TestCase):
         self.delete_trim_level(edit_car_page)
         edit_car_page.click_submit_car_button()
 
-        # Press RETURN to close alert
-        ActionChains(self.driver).send_keys(Keys.RETURN).perform()
+        # Accept alert
+        self.driver.switch_to.alert.accept()
+
         LOG.info("Edited car to: %s", get_car_string(self.car))
 
         self.assertIsNotNone(self.main_page.find_car_row(self.car))
@@ -80,8 +81,8 @@ class EditCar(unittest.TestCase):
         self.add_trim_level(edit_car_page)
         edit_car_page.click_submit_car_button()
 
-        # Press RETURN to close alert
-        ActionChains(self.driver).send_keys(Keys.RETURN).perform()
+        # Accept alert
+        self.driver.switch_to.alert.accept()
         LOG.info("Edited car to: %s", get_car_string(self.car))
 
         self.assertIsNotNone(self.main_page.find_car_row(self.car))
@@ -102,9 +103,6 @@ class EditCar(unittest.TestCase):
         self.main_page.click_add_car_link()
         add_car_page = AddCarPage(self.driver)
         add_car_page.add_car(self.car)
-
-        # Press RETURN to close alert
-        ActionChains(self.driver).send_keys(Keys.RETURN).perform()
 
         LOG.info("Added car: %s", get_car_string(self.car))
 
