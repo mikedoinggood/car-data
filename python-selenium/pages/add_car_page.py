@@ -1,7 +1,7 @@
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
-from .locators import AddCarPageLocators
+from .locators import AddCarPageLocators, MainPageLocators
 from .page import BasePage
 
 class AddCarPage(BasePage):
@@ -9,8 +9,8 @@ class AddCarPage(BasePage):
         super().__init__(driver)
 
         # Wait for submit to be present, others should then also be present
-        wait = WebDriverWait(self.driver, 10)
-        self.submit_car_button = wait.until(expected_conditions.presence_of_element_located(AddCarPageLocators.SUBMIT_CAR_BUTTON))
+        self.wait = WebDriverWait(self.driver, 10)
+        self.submit_car_button = self.wait.until(expected_conditions.presence_of_element_located(AddCarPageLocators.SUBMIT_CAR_BUTTON))
 
     def add_car(self, car):
         year_input = self.driver.find_element(*AddCarPageLocators.YEAR_INPUT)
@@ -33,3 +33,9 @@ class AddCarPage(BasePage):
             trim_levels_inputs[i].send_keys(trim_level)
 
         self.submit_car_button.click()
+
+        # Accept alert
+        self.driver.switch_to.alert.accept()
+
+        # Wait for javascript redirect
+        self.wait.until(expected_conditions.presence_of_element_located(MainPageLocators.CAR_ROWS))

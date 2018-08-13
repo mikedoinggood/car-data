@@ -2,12 +2,14 @@ import unittest
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.ui import WebDriverWait
 
 from logging_utility import get_logger
 from pages.add_car_page import AddCarPage
 from pages.car_detail_page import CarDetailPage
 from pages.edit_car_page import EditCarPage
-from pages.locators import AddCarPageLocators
+from pages.locators import AddCarPageLocators, LoginPageLocators
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
 from web_driver_utility import WebDriverUtility
@@ -15,10 +17,10 @@ from web_driver_utility import WebDriverUtility
 """ Logging setup """
 LOG = get_logger(__name__)
 
-class EditCar(unittest.TestCase):
+class Login(unittest.TestCase):
     def setUp(self):
         self.web_driver_utility = WebDriverUtility()
-        self.driver = self.web_driver_utility.get_new_web_driver(WebDriverUtility.PHANTOMJS_DRIVER)
+        self.driver = self.web_driver_utility.get_new_web_driver()
         self.main_page = None
 
     def test_login(self):
@@ -123,6 +125,8 @@ class EditCar(unittest.TestCase):
     def logout(self):
         self.driver.find_element(By.LINK_TEXT, "Logged in as user").click()
         self.driver.find_element(By.ID, "logoutlink").click()
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(expected_conditions.presence_of_element_located(LoginPageLocators.SIGN_IN_BUTTON))
         self.driver.find_element(By.ID, "loginform")
         LOG.info("Logged out.")
 

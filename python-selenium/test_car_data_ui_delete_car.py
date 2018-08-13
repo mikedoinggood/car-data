@@ -23,9 +23,8 @@ class DeleteCar(unittest.TestCase):
             'trim_levels': [generate_random_trim_level() for _ in range(3)],
         }
 
-        # Using firefox instead of phantomjs to handle confirmation pop ups
         web_driver_utility = WebDriverUtility()
-        self.driver = web_driver_utility.get_new_web_driver(WebDriverUtility.FIREFOX_DRIVER)
+        self.driver = web_driver_utility.get_new_web_driver()
         self.driver.get(web_driver_utility.get_home_page())
 
         self.main_page = MainPage(self.driver)
@@ -61,9 +60,6 @@ class DeleteCar(unittest.TestCase):
         self.main_page.click_add_car_link()
         add_car_page = AddCarPage(self.driver)
         add_car_page.add_car(self.car)
-
-        # Accept alert
-        self.driver.switch_to.alert.accept()
 
         LOG.info("Added car: %s", get_car_string(self.car))
 
