@@ -9,7 +9,7 @@ from logging_utility import get_logger
 from pages.add_car_page import AddCarPage
 from pages.car_detail_page import CarDetailPage
 from pages.edit_car_page import EditCarPage
-from pages.locators import AddCarPageLocators, LoginPageLocators
+from pages.locators import LoginPageLocators
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
 from web_driver_utility import WebDriverUtility

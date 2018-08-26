@@ -35,6 +35,7 @@ class AddCarPage(BasePage):
         self.submit_car_button.click()
 
         # Accept alert
+        self.wait.until(expected_conditions.alert_is_present())
         self.driver.switch_to.alert.accept()
 
         # Wait for javascript redirect

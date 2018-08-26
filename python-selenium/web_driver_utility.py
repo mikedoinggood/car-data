@@ -3,9 +3,6 @@ import os
 from selenium import webdriver
 
 class WebDriverUtility():
-    FIREFOX_DRIVER = 0
-    PHANTOMJS_DRIVER = 1
-
     def get_new_web_driver(self):
         os.environ['MOZ_HEADLESS'] = '1'
         driver = webdriver.Firefox()
