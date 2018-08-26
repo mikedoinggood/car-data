@@ -1,7 +1,7 @@
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
-from .locators import EditCarPageLocators
+from .locators import EditCarPageLocators, MainPageLocators
 from .page import BasePage
 
 class EditCarPage(BasePage):
@@ -9,8 +9,8 @@ class EditCarPage(BasePage):
         super().__init__(driver)
 
         # Wait for trim levels to be present, others should then also be present
-        wait = WebDriverWait(self.driver, 10)
-        self.trim_levels = wait.until(expected_conditions.presence_of_element_located(EditCarPageLocators.TRIM_LEVELS))
+        self.wait = WebDriverWait(self.driver, 10)
+        self.trim_levels = self.wait.until(expected_conditions.visibility_of_element_located(EditCarPageLocators.TRIM_LEVELS))
 
         self.year_input = self.driver.find_element(*EditCarPageLocators.YEAR_INPUT)
         self.make_input = self.driver.find_element(*EditCarPageLocators.MAKE_INPUT)
@@ -35,3 +35,10 @@ class EditCarPage(BasePage):
     def click_submit_car_button(self):
         submit_car_button = self.driver.find_element(*EditCarPageLocators.SUBMIT_CAR_BUTTON)
         submit_car_button.click()
+
+        # Accept alert
+        self.wait.until(expected_conditions.alert_is_present())
+        self.driver.switch_to.alert.accept()
+
+        # Wait for javascript redirect
+        self.wait.until(expected_conditions.presence_of_element_located(MainPageLocators.CAR_ROWS))

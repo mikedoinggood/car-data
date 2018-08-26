@@ -53,9 +53,6 @@ class EditCar(unittest.TestCase):
         self.edit_trim_levels(edit_car_page)
         edit_car_page.click_submit_car_button()
 
-        # Accept alert
-        self.driver.switch_to.alert.accept()
-
         LOG.info("Edited car to: %s", get_car_string(self.car))
 
         self.assertIsNotNone(self.main_page.find_car_row(self.car))
@@ -66,9 +63,6 @@ class EditCar(unittest.TestCase):
         edit_car_page = EditCarPage(self.driver)
         self.delete_trim_level(edit_car_page)
         edit_car_page.click_submit_car_button()
-
-        # Accept alert
-        self.driver.switch_to.alert.accept()
 
         LOG.info("Edited car to: %s", get_car_string(self.car))
 
@@ -81,8 +75,6 @@ class EditCar(unittest.TestCase):
         self.add_trim_level(edit_car_page)
         edit_car_page.click_submit_car_button()
 
-        # Accept alert
-        self.driver.switch_to.alert.accept()
         LOG.info("Edited car to: %s", get_car_string(self.car))
 
         self.assertIsNotNone(self.main_page.find_car_row(self.car))
