@@ -41,4 +41,15 @@
       <artifactId>car-data-core</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>static/react/**</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>
 </project>
