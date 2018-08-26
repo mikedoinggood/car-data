@@ -2,59 +2,12 @@
 <html layout:decorator="layout">
   <head>
     <title>Car Data</title>
-    <script th:inline="javascript" type="text/javascript">
-        /*<![CDATA[*/
-            $(document).ready(function() {
-                var request = $.ajax({
-                    url: "/resources/cars", 
-                    method: "GET",
-                });
-
-                request.done(function(data) {
-                    $.each(data, function(i, item) {
-                        var id = item.id ? item.id.toString() : "";
-                        var year = item.year ? item.year.toString() : "";
-                        var make = item.make ? item.make : "";
-                        var model = item.model ? item.model : "";
-                        var trimLevelsArray = [];
-                        var trimLevelsString = "";
-
-                        item.trimLevels.sort(sortTrimLevels);
-
-                        for (var i=0; i<item.trimLevels.length; i++) {
-                            trimLevelsArray.push(item.trimLevels[i].name);
-                        }
-
-                        if (trimLevelsArray.length > 0) {
-                            trimLevelsString = trimLevelsArray.join(", ");
-                        }
-
-                        $("#tablebody").append("<tr>" +
-                                                 "<td><a href='cars/" + id + "'>" + escapeHtml(year) + "</a></td>" +
-                                                 "<td><a href='cars/" + id + "'>" + escapeHtml(make) + "</a></td>" +
-                                                 "<td><a href='cars/" + id + "'>" + escapeHtml(model) + "</a></td>" +
-                                                 "<td><a href='cars/" + id + "'>" + escapeHtml(trimLevelsString) + "</a></td>" +
-                                               "</tr>");
-                    });
-                });
-            });
-        /*]]>*/
-    </script>
   </head>
   <body>
     <div class="container" layout:fragment="content">
-      <table class="table" id="carstable">
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th>Make</th>
-            <th>Model</th>
-            <th>Trim Levels</th>
-          </tr>
-        </thead>
-        <tbody id="tablebody">
-        </tbody>
-      </table>
+      <div id="cars_table_container"></div>
+      <!-- Load our React component. -->
+      <script src="/js/cars_table.js"></script>
     </div>
   </body>
 </html>
