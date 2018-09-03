@@ -9,8 +9,11 @@ class WebDriverUtility():
 
         return driver
 
-    def get_home_page(self):
+    def get_home_page_url(self):
         return "http://localhost:8082"
 
-    def get_add_car_page(self):
-        return self.get_home_page() + "/addcar"
+    def get_add_car_page_url(self):
+        return self.get_home_page_url() + "/addcar"
+
+    def get_charts_page_url(self):
+        return self.get_home_page_url() + "/charts"

@@ -5,11 +5,11 @@ from .locators import EditCarPageLocators, MainPageLocators
 from .page import BasePage
 
 class EditCarPage(BasePage):
-    def __init__(self, driver):
-        super().__init__(driver)
+    def __init__(self, web_driver):
+        super().__init__(web_driver)
 
         # Wait for trim levels to be present, others should then also be present
-        self.wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 5)
         self.trim_levels = self.wait.until(expected_conditions.visibility_of_element_located(EditCarPageLocators.TRIM_LEVELS))
 
         self.year_input = self.driver.find_element(*EditCarPageLocators.YEAR_INPUT)

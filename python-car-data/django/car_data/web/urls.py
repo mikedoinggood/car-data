@@ -12,5 +12,6 @@ urlpatterns = [
     url(r'^addcar$', views.addCar, name='addcar'),
     url(r'^cars/(?P<car_id>[0-9]+)/edit$', views.edit_car, name='edit_car'),
     url(r'^cars/(?P<car_id>[0-9]+)$', views.car_detail, name='car_detail'),
+    url(r'^charts$', views.charts, name='charts'),
     url(r'^$', views.index, name='index'),
 ]

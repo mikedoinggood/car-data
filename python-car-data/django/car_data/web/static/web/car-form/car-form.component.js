@@ -12,7 +12,7 @@ angular.
           this.formHeader = 'Edit Car';
 
           CarService.get({carId: this.carId},
-            function sucess(car) {
+            function success(car) {
               self.showForm = true;
               self.car = car;
 

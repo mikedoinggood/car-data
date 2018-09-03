@@ -1,3 +1,3 @@
 class BasePage():
-    def __init__(self, driver):
-        self.driver = driver
+    def __init__(self, web_driver):
+        self.driver = web_driver

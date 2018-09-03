@@ -16,8 +16,8 @@ public class LoginPage {
     @FindBy(xpath = "//form[@id='loginform']//input[@type='submit']")
     private WebElement signInButton;
 
-    public LoginPage(WebDriver driver) {
-        PageFactory.initElements(driver, this);
+    public LoginPage(WebDriver webDriver) {
+        PageFactory.initElements(webDriver, this);
     }
 
     public void typeUserName(String userName) {

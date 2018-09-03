@@ -285,3 +285,16 @@ class CarDataTest(TestCase):
         response = self.client.delete('/api/resources/cars/{}'.format(9999), json.dumps(self.car), 'application/json')
 
         self.assertEqual(response.status_code, 404)
+
+    def test_read_stats(self):
+        response = self.client.get('/api/resources/stats')
+        stats = response.json()
+
+        makeCounts = stats['makeCounts']
+        self.assertEqual(makeCounts['Honda'], 1)
+        self.assertEqual(makeCounts['Ford'], 1)
+
+        yearCounts = stats['yearCounts']
+        self.assertEqual(yearCounts['2017'], 2)
+
+        self.assertEqual(response.status_code, 200)

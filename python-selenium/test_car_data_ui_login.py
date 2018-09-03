@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from logging_utility import get_logger
 from pages.add_car_page import AddCarPage
 from pages.car_detail_page import CarDetailPage
+from pages.charts_page import ChartsPage
 from pages.edit_car_page import EditCarPage
 from pages.locators import LoginPageLocators
 from pages.login_page import LoginPage
@@ -40,7 +41,7 @@ class Login(unittest.TestCase):
         self.logout()
 
     def test_add_car_page_login(self):
-        self.driver.get(self.web_driver_utility.get_add_car_page())
+        self.driver.get(self.web_driver_utility.get_add_car_page_url())
 
         try:
             add_car_page = AddCarPage(self.driver)
@@ -48,9 +49,22 @@ class Login(unittest.TestCase):
             LOG.info("Could not load add car page.")
 
         self.login("user", "password")
-        self.driver.get(self.web_driver_utility.get_add_car_page())
+        self.driver.get(self.web_driver_utility.get_add_car_page_url())
         add_car_page = AddCarPage(self.driver)
         LOG.info("Add car page loaded.")
+
+    def test_charts_page_login(self):
+        self.driver.get(self.web_driver_utility.get_charts_page_url())
+
+        try:
+            charts_page = ChartsPage(self.driver)
+        except TimeoutException:
+            LOG.info("Could not load charts page.")
+
+        self.login("user", "password")
+        self.driver.get(self.web_driver_utility.get_charts_page_url())
+        charts_page = ChartsPage(self.driver)
+        LOG.info("Charts page loaded.")
 
     def test_car_detail_page_login(self):
         self.login_and_add_car()
@@ -99,13 +113,13 @@ class Login(unittest.TestCase):
 
     """ Utility Methods """
     def login(self, username, password):
-        self.driver.get(self.web_driver_utility.get_home_page())
+        self.driver.get(self.web_driver_utility.get_home_page_url())
         LOG.info("Logging in...")
         login_page = LoginPage(self.driver)
         login_page.login(username, password)
 
     def login_and_add_car(self):
-        self.driver.get(self.web_driver_utility.get_home_page())
+        self.driver.get(self.web_driver_utility.get_home_page_url())
         self.login("user", "password")
         self.main_page = MainPage(self.driver)
         self.main_page.click_add_car_link()
@@ -125,7 +139,7 @@ class Login(unittest.TestCase):
     def logout(self):
         self.driver.find_element(By.LINK_TEXT, "Logged in as user").click()
         self.driver.find_element(By.ID, "logoutlink").click()
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, 5)
         wait.until(expected_conditions.presence_of_element_located(LoginPageLocators.SIGN_IN_BUTTON))
         self.driver.find_element(By.ID, "loginform")
         LOG.info("Logged out.")

@@ -3,6 +3,7 @@ import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 from django.db import transaction
+from django.db.models import Count
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -103,6 +104,25 @@ def car_delete(self, request, *arg, **kwargs):
 
     return HttpResponse(status=200, content_type='application/json')
 
+def stats_get(self, request, *arg, **kwargs):
+    makeCounts = Car.objects.values('make').annotate(count=Count('id'))
+    yearCounts = Car.objects.values('year').annotate(count=Count('id'))
+
+    makeData = {}
+    for item in makeCounts:
+        makeData[item['make']] = item['count']
+
+    yearData = {}
+    for item in yearCounts:
+        yearData[item['year']] = item['count']
+
+    data = {
+        'makeCounts': makeData,
+        'yearCounts': yearData,
+    }
+
+    return HttpResponse(json.dumps(data, indent=4), content_type='application/json')
+
 def convert_car_to_dict(car):
     trim_levels = []
 
@@ -152,3 +172,9 @@ class CarDetailUrl(LoginRequiredMixin, View):
 
     def delete(self, request, *arg, **kwargs):
         return car_delete(self, request, *arg, **kwargs)
+
+class StatsUrl(LoginRequiredMixin, View):
+    raise_exception = True
+
+    def get(self, request, *arg, **kwargs):
+        return stats_get(self, request, *arg, **kwargs)

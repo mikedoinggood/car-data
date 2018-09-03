@@ -25,4 +25,9 @@ public class CarController {
     public String editDetail() {
         return "editcar";
     }
+
+    @RequestMapping("/charts")
+    public String charts() {
+        return "charts";
+    }
 }

@@ -5,11 +5,11 @@ from .locators import AddCarPageLocators, MainPageLocators
 from .page import BasePage
 
 class AddCarPage(BasePage):
-    def __init__(self, driver):
-        super().__init__(driver)
+    def __init__(self, web_driver):
+        super().__init__(web_driver)
 
         # Wait for submit to be present, others should then also be present
-        self.wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 5)
         self.submit_car_button = self.wait.until(expected_conditions.presence_of_element_located(AddCarPageLocators.SUBMIT_CAR_BUTTON))
 
     def add_car(self, car):

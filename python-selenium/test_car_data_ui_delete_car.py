@@ -25,7 +25,7 @@ class DeleteCar(unittest.TestCase):
 
         web_driver_utility = WebDriverUtility()
         self.driver = web_driver_utility.get_new_web_driver()
-        self.driver.get(web_driver_utility.get_home_page())
+        self.driver.get(web_driver_utility.get_home_page_url())
 
         self.main_page = MainPage(self.driver)
 

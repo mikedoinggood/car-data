@@ -18,21 +18,21 @@ def logout(request):
 
 @login_required
 def index(request):
-    context = None
-    return render(request, 'web/index.html', context)
+    return render(request, 'web/index.html')
+
+@login_required
+def charts(request):
+    return render(request, 'web/charts.html')
 
 @login_required
 @ensure_csrf_cookie
 def addCar(request):
-    context = None
-    return render(request, 'web/addcar.html', context)
+    return render(request, 'web/addcar.html')
 
 @login_required
 def car_detail(request, car_id):
-    context = None
-    return render(request, 'web/cardetail.html', context)
+    return render(request, 'web/cardetail.html')
 
 @login_required
 def edit_car(request, car_id):
-    context = None
-    return render(request, 'web/editcar.html', context)
+    return render(request, 'web/editcar.html')

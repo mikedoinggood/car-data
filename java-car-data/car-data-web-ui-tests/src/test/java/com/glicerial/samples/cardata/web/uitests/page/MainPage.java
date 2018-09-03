@@ -26,8 +26,8 @@ public class MainPage {
     @FindBy(linkText = "Add Car")
     private WebElement addCarLink;
 
-    public MainPage(WebDriver driver) {
-        this.driver = driver;
+    public MainPage(WebDriver webDriver) {
+        this.driver = webDriver;
         PageFactory.initElements(driver, this);
     }
 
