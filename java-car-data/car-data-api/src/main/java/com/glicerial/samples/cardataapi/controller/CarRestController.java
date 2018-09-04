@@ -1,9 +1,11 @@
 package com.glicerial.samples.cardataapi.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -104,7 +106,7 @@ public class CarRestController {
         return ResponseEntity.ok().body("{}");
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = { "api/cars", "/resources/cars" }, produces = {MediaType.APPLICATION_JSON_VALUE, "application/json"})
+    @RequestMapping(method = RequestMethod.POST, value = { "/api/cars", "/resources/cars" }, produces = {MediaType.APPLICATION_JSON_VALUE, "application/json"})
     ResponseEntity<?> addCar(@RequestBody Car submittedCar) {
         if (!validateCar(submittedCar)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).build();
@@ -133,6 +135,28 @@ public class CarRestController {
         carRepository.save(newCar);
 
         return ResponseEntity.ok(newCar);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = { "/api/stats", "/resources/stats" }, produces = {MediaType.APPLICATION_JSON_VALUE, "application/json"})
+    ResponseEntity<?> readStats() {
+        List<Object[]> makeCountResult = carRepository.findMakeCount();
+        List<Object[]> yearCountResult = carRepository.findYearCount();
+        Map<String, Long> makeCountMap = new HashMap<String, Long>();
+        Map<String, Long> yearCountMap = new HashMap<String, Long>();
+
+        makeCountResult.forEach(item->{
+            makeCountMap.put(item[0].toString(), (Long) item[1]);
+        });
+
+        yearCountResult.forEach(item->{
+            yearCountMap.put(item[0].toString(), (Long) item[1]);
+        });
+
+        HashMap<String, Map<String, Long>> resultsMap = new HashMap<String, Map<String, Long>>();
+        resultsMap.put("makeCounts", makeCountMap);
+        resultsMap.put("yearCounts", yearCountMap);
+
+        return ResponseEntity.ok(resultsMap);
     }
 
     private boolean validateCar(Car submittedCar) {

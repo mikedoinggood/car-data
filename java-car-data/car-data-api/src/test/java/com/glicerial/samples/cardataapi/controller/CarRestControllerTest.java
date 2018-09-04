@@ -564,6 +564,29 @@ public class CarRestControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void readStats() throws Exception {
+        // Add another 2016
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(post(carsUrl)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/resources/stats/"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.makeCounts.Nissan", is(1)))
+                .andExpect(jsonPath("$.makeCounts.Tesla", is(1)))
+                .andExpect(jsonPath("$.makeCounts.Honda", is(1)))
+                .andExpect(jsonPath("$.yearCounts.2017", is(1)))
+                .andExpect(jsonPath("$.yearCounts.2016", is(2)));
+    }
+
     private TrimLevel getExistingTrimLevel(Car existingCar) {
         Set<TrimLevel> existingTrimLevelSet = existingCar.getTrimLevels();
         Iterator<TrimLevel> iterator = existingTrimLevelSet.iterator();

@@ -5,11 +5,11 @@ from .locators import CarDetailPageLocators
 from .page import BasePage
 
 class CarDetailPage(BasePage):
-    def __init__(self, driver):
-        super().__init__(driver)
+    def __init__(self, web_driver):
+        super().__init__(web_driver)
 
         # Wait for trim levels to be present, others should then also be present
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, 5)
         self.trim_levels = wait.until(expected_conditions.presence_of_element_located(CarDetailPageLocators.TRIM_LEVELS))
 
         self.year = self.driver.find_element(*CarDetailPageLocators.YEAR)

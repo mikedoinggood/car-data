@@ -31,8 +31,8 @@ public class EditCarPage {
     @FindBy(id = "submitcarbutton")
     private WebElement submitCarButton;
 
-    public EditCarPage(WebDriver driver) {
-        this.driver = driver;
+    public EditCarPage(WebDriver webDriver) {
+        this.driver = webDriver;
         WebDriverWait wait = new WebDriverWait(driver, 5);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("trimlevels")));
         PageFactory.initElements(driver, this);

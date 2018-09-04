@@ -18,6 +18,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.glicerial.samples.cardata.web.uitests.page.AddCarPage;
 import com.glicerial.samples.cardata.web.uitests.page.CarDetailPage;
+import com.glicerial.samples.cardata.web.uitests.page.ChartsPage;
 import com.glicerial.samples.cardata.web.uitests.page.EditCarPage;
 import com.glicerial.samples.cardata.web.uitests.page.LoginPage;
 import com.glicerial.samples.cardata.web.uitests.page.MainPage;
@@ -60,7 +61,7 @@ public class LoginTest {
 
     @Test
     public void addCarPageLoginTest() {
-        driver.get(webDriverUtility.getAddCarPage());
+        driver.get(webDriverUtility.getAddCarPageUrl());
 
         try {
             AddCarPage addCarPage = new AddCarPage(driver);
@@ -69,9 +70,25 @@ public class LoginTest {
         }
 
         login("user", "password");
-        driver.get(webDriverUtility.getAddCarPage());
+        driver.get(webDriverUtility.getAddCarPageUrl());
         AddCarPage addCarPage = new AddCarPage(driver);
         System.out.println("Add car page loaded.");
+    }
+
+    @Test
+    public void ChartsPageLoginTest() {
+        driver.get(webDriverUtility.getChartsPageUrl());
+
+        try {
+            ChartsPage chartsPage = new ChartsPage(driver);
+        } catch (TimeoutException ex) {
+            System.out.println("Could not load charts page.");
+        }
+
+        login("user", "password");
+        driver.get(webDriverUtility.getChartsPageUrl());
+        ChartsPage chartsPage = new ChartsPage(driver);
+        System.out.println("Charts page loaded.");
     }
 
     @Test
@@ -125,14 +142,14 @@ public class LoginTest {
     }
 
     private void login(String username, String password) {
-        driver.get(webDriverUtility.getHomePage());
+        driver.get(webDriverUtility.getHomePageUrl());
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(username, password);
         System.out.println("Logged in.");
     }
 
     private void loginAndAddCar() {
-        driver.get(webDriverUtility.getHomePage());
+        driver.get(webDriverUtility.getHomePageUrl());
         login("user", "password");
         mainPage = new MainPage(driver);
         mainPage.clickAddCarLink();

@@ -56,7 +56,7 @@ public class AddCarsTest {
 
         WebDriverUtility webDriverUtility = new WebDriverUtility();
         driver = webDriverUtility.getNewWebDriver();
-        driver.get(webDriverUtility.getHomePage());
+        driver.get(webDriverUtility.getHomePageUrl());
     }
 
     @Test

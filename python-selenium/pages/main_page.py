@@ -12,7 +12,7 @@ class MainPage(BasePage):
         add_car_link.click()
 
     def get_car_rows(self):
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, 5)
         car_rows = wait.until(expected_conditions.presence_of_all_elements_located(MainPageLocators.CAR_ROWS))
 
         return car_rows

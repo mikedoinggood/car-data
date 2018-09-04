@@ -20,11 +20,15 @@ public class WebDriverUtility {
         return webDriver;
     }
 
-    public String getHomePage() {
+    public String getHomePageUrl() {
         return "http://localhost:8082";
     }
 
-    public String getAddCarPage() {
-        return getHomePage() + "/addcar";
+    public String getAddCarPageUrl() {
+        return getHomePageUrl() + "/addcar";
+    }
+
+    public String getChartsPageUrl() {
+        return getHomePageUrl() + "/charts";
     }
 }

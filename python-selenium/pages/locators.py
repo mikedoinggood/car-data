@@ -32,3 +32,6 @@ class EditCarPageLocators():
     TRIM_LEVELS = (By.ID, "trimlevels")
     ADD_TRIM_LEVEL_BUTTON = (By.ID, "addtrimlevelbutton")
     SUBMIT_CAR_BUTTON = (By.ID, "submitcarbutton")
+
+class ChartsPageLocators():
+    CHARTS_DIV = (By.ID, "charts")

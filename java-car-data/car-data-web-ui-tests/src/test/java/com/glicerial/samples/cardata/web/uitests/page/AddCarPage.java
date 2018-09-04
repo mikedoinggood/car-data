@@ -34,8 +34,8 @@ public class AddCarPage {
     @FindBy(id = "submitcarbutton")
     private WebElement submitCarButton;
 
-    public AddCarPage(WebDriver driver) {
-        this.driver = driver;
+    public AddCarPage(WebDriver webDriver) {
+        this.driver = webDriver;
         WebDriverWait wait = new WebDriverWait(driver, 5);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("submitcarbutton")));
         PageFactory.initElements(driver, this);

@@ -31,8 +31,8 @@ public class CarDetailPage {
     @FindBy(id = "trimlevels")
     private WebElement trimLevels;
 
-    public CarDetailPage(WebDriver driver) {
-        this.driver = driver;
+    public CarDetailPage(WebDriver webDriver) {
+        this.driver = webDriver;
         WebDriverWait wait = new WebDriverWait(driver, 5);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("trimlevels")));
         PageFactory.initElements(driver, this);
