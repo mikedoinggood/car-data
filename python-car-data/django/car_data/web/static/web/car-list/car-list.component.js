@@ -8,6 +8,7 @@ angular.
 
         CarService.query(
           function success(response) {
+            self.carsLoaded = true;
             self.cars = response;
 
             if (response.length > 0) {
@@ -16,6 +17,7 @@ angular.
               self.noCarsFound = true;
             }
           }, function error(response) {
+            self.carsLoaded = true;
             self.noCarsFound = true;
           }
         );

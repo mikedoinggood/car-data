@@ -72,6 +72,7 @@ var CarsTable = function (_React$Component) {
           isLoaded = _state.isLoaded,
           cars = _state.cars;
 
+
       if (error) {
         return React.createElement(
           "div",
@@ -84,6 +85,12 @@ var CarsTable = function (_React$Component) {
           "div",
           null,
           "Loading..."
+        );
+      } else if (cars.length == 0) {
+        return React.createElement(
+          "h4",
+          null,
+          "No cars found."
         );
       } else {
         return React.createElement(
