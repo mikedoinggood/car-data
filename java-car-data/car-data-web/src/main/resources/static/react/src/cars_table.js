@@ -50,10 +50,13 @@ class CarsTable extends React.Component {
 
   render() {
     const { error, isLoaded, cars } = this.state;
+
     if (error) {
       return <div>Error: {error.responseJSON.error}</div>;
     } else if (!isLoaded) {
       return <div>Loading...</div>;
+    } else if (cars.length == 0) {
+      return <h4>No cars found.</h4>;
     } else {
       return (
         <table className="table" id="carstable">
