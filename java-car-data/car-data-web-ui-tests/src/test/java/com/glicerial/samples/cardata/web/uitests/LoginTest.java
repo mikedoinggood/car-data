@@ -76,7 +76,7 @@ public class LoginTest {
     }
 
     @Test
-    public void ChartsPageLoginTest() {
+    public void chartsPageLoginTest() {
         driver.get(webDriverUtility.getChartsPageUrl());
 
         try {
@@ -98,6 +98,7 @@ public class LoginTest {
         String firstCarDetailLink = carRows.get(0).findElement(By.tagName("a")).getAttribute("href");
 
         driver.get(firstCarDetailLink);
+        System.out.println(driver.getTitle());
         CarDetailPage carDetailPage = new CarDetailPage(driver);
         System.out.println("Car detail page loaded.");
 
@@ -143,9 +144,9 @@ public class LoginTest {
 
     private void login(String username, String password) {
         driver.get(webDriverUtility.getHomePageUrl());
+        System.out.println("Logging in...");
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(username, password);
-        System.out.println("Logged in.");
     }
 
     private void loginAndAddCar() {

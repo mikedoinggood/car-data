@@ -1,7 +1,7 @@
 <div ng-if="$ctrl.carNotFound">
   <h4>Car not found.</h4>
 </div>    
-<div ng-if="$ctrl.carFound">
+<div id="cardetails" ng-if="$ctrl.carFound">
   <h4>Car Details</h4>
   <a class="btn btn-default btn-sm" id="editlink" href="{{$ctrl.carId}}/edit" role="button">Edit</a>
   <button class="btn btn-default btn-sm" id="deletecarbutton" ng-disabled="$ctrl.deleteDisabled" ng-click="$ctrl.confirmDelete()">Delete</button>

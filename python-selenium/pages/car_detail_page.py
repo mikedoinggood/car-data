@@ -8,10 +8,10 @@ class CarDetailPage(BasePage):
     def __init__(self, web_driver):
         super().__init__(web_driver)
 
-        # Wait for trim levels to be present, others should then also be present
         wait = WebDriverWait(self.driver, 5)
-        self.trim_levels = wait.until(expected_conditions.presence_of_element_located(CarDetailPageLocators.TRIM_LEVELS))
+        wait.until(expected_conditions.presence_of_element_located(CarDetailPageLocators.CAR_DETAILS))
 
+        self.trim_levels = self.driver.find_element(*CarDetailPageLocators.TRIM_LEVELS)
         self.year = self.driver.find_element(*CarDetailPageLocators.YEAR)
         self.make = self.driver.find_element(*CarDetailPageLocators.MAKE)
         self.model = self.driver.find_element(*CarDetailPageLocators.MODEL)
