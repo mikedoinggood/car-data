@@ -2,6 +2,8 @@ import unittest
 import time
 
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.ui import WebDriverWait
 
 from car_data_utility import generate_random_trim_level, get_car_string
 from logging_utility import get_logger
@@ -68,8 +70,10 @@ class DeleteCar(unittest.TestCase):
         car_detail_page.click_delete_car_button()
 
         # Accept alerts
+        wait = WebDriverWait(self.driver, 5)
+        wait.until(expected_conditions.alert_is_present())
         self.driver.switch_to.alert.accept()
-        time.sleep(1)
+        wait.until(expected_conditions.alert_is_present())
         self.driver.switch_to.alert.accept()
 
         LOG.info("Deleted car: %s", get_car_string(self.car))

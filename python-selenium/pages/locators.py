@@ -18,6 +18,7 @@ class AddCarPageLocators():
     SUBMIT_CAR_BUTTON = (By.ID, "submitcarbutton")
 
 class CarDetailPageLocators():
+    CAR_DETAILS = (By.ID, "cardetails")
     EDIT_CAR_LINK = (By.ID, "editlink")
     DELETE_CAR_BUTTON = (By.ID, "deletecarbutton")
     YEAR = (By.ID, "year")
