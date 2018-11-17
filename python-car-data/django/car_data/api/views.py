@@ -28,7 +28,7 @@ def cars_post(request):
     model = data.get('model')
     trim_levels = data.get('trimLevels')
 
-    if not year or not make or not model:
+    if not validate_car(year, make, model, trim_levels):
         return HttpResponse(status=400, content_type='application/json')
 
     with transaction.atomic():
@@ -66,7 +66,7 @@ def car_update_put(self, request, *args, **kwargs):
     car.model = data.get('model')
     trim_levels = data.get('trimLevels')
 
-    if not car.year or not car.make or not car.model:
+    if not validate_car(car.year, car.make, car.model, trim_levels):
         return HttpResponse(status=400, content_type='application/json')
 
     with transaction.atomic():
@@ -75,19 +75,16 @@ def car_update_put(self, request, *args, **kwargs):
         if trim_levels:
             for trim_level in trim_levels:
                 if trim_level.get('id'):
-                    if trim_level.get('name'):
-                        try:
-                            existing_trim_level =  car.trimlevel_set.get(pk=trim_level.get('id'))
-                        except TrimLevel.DoesNotExist as e:
-                            continue
+                    try:
+                        existing_trim_level =  car.trimlevel_set.get(pk=trim_level.get('id'))
+                    except TrimLevel.DoesNotExist as e:
+                        continue
 
-                        if trim_level.get('delete'):
-                            existing_trim_level.delete()
-                        else:
-                            existing_trim_level.name = trim_level['name']
-                            existing_trim_level.save()
+                    if trim_level.get('delete'):
+                        existing_trim_level.delete()
                     else:
-                        return HttpResponse(status=400, content_type='application/json')
+                        existing_trim_level.name = trim_level['name']
+                        existing_trim_level.save()
                 else:
                     if trim_level.get('name'):
                         car.trimlevel_set.add(TrimLevel(car=car, name=trim_level['name']), bulk=False)
@@ -103,6 +100,20 @@ def car_delete(self, request, *arg, **kwargs):
         return HttpResponse(status=404, content_type='application/json')
 
     return HttpResponse(status=200, content_type='application/json')
+
+def validate_car(year, make, model, trim_levels):
+    if not year or not make or not model:
+        return False
+
+    if year < 1885 or year > 3000:
+        return False
+
+    if trim_levels:
+        for trim_level in trim_levels:
+            if trim_level.get('id') and not trim_level.get('name'):
+                return False
+
+    return True
 
 def stats_get(self, request, *arg, **kwargs):
     makeCounts = Car.objects.values('make').annotate(count=Count('id'))

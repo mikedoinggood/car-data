@@ -160,6 +160,12 @@ public class CarRestController {
     }
 
     private boolean validateCar(Car submittedCar) {
+        int year = submittedCar.getYear();
+
+        if (year < 1885 || year > 3000) {
+            return false;
+        }
+
         if (StringUtils.isBlank(submittedCar.getMake()) || StringUtils.isBlank(submittedCar.getModel())) {
             return false;
         }

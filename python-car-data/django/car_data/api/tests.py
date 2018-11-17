@@ -9,6 +9,9 @@ from django.test import TestCase
 
 
 class CarDataTest(TestCase):
+    MIN_VALID_MODEL_YEAR = 1885
+    MAX_VALID_MODEL_YEAR = 3000
+
     def setUp(self):
         print("\n*** " + self._testMethodName + " ***")
         print("\nCreating user...")
@@ -77,6 +80,24 @@ class CarDataTest(TestCase):
         response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
 
         self.assertEqual(response.status_code, 400)
+
+    def test_add_year_1884(self):
+        self.do_add_car_test_with_year(1884)
+
+    def test_add_year_1885(self):
+        self.do_add_car_test_with_year(1885)
+
+    def test_add_year_1886(self):
+        self.do_add_car_test_with_year(1886)
+
+    def test_add_year_2999(self):
+        self.do_add_car_test_with_year(2999)
+
+    def test_add_year_3000(self):
+        self.do_add_car_test_with_year(3000)
+
+    def test_add_year_3001(self):
+        self.do_add_car_test_with_year(3001)
 
     def test_add_car_no_make(self):
         self.car.pop('make', None)
@@ -163,6 +184,31 @@ class CarDataTest(TestCase):
         response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
 
         self.assertEqual(response.status_code, 400)
+
+    def test_edit_car_empty_year(self):
+        existing_car_id = self.car_list[0].id
+        self.car['year'] = ""
+        response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_edit_car_year_1884(self):
+        self.do_edit_car_test_with_year(1884)
+
+    def test_edit_car_year_1885(self):
+        self.do_edit_car_test_with_year(1885)
+
+    def test_edit_car_year_1886(self):
+        self.do_edit_car_test_with_year(1886)
+
+    def test_edit_car_year_2999(self):
+        self.do_edit_car_test_with_year(2999)
+
+    def test_edit_car_year_3000(self):
+        self.do_edit_car_test_with_year(3000)
+
+    def test_edit_car_year_3001(self):
+        self.do_edit_car_test_with_year(3001)
 
     def test_edit_car_no_make(self):
         existing_car_id = self.car_list[0].id
@@ -298,3 +344,26 @@ class CarDataTest(TestCase):
         self.assertEqual(yearCounts['2017'], 2)
 
         self.assertEqual(response.status_code, 200)
+
+    def do_add_car_test_with_year(self, year):
+        self.car['year'] = year
+        response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
+
+        if year < self.MIN_VALID_MODEL_YEAR or year > self.MAX_VALID_MODEL_YEAR:
+            expected_response = 400
+        else:
+            expected_response = 200
+
+        self.assertEqual(response.status_code, expected_response)
+
+    def do_edit_car_test_with_year(self, year):
+        existing_car_id = self.car_list[0].id
+        self.car['year'] = year
+        response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
+
+        if year < self.MIN_VALID_MODEL_YEAR or year > self.MAX_VALID_MODEL_YEAR:
+            expected_response = 400
+        else:
+            expected_response = 200
+
+        self.assertEqual(response.status_code, expected_response)
