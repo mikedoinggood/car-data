@@ -19,6 +19,7 @@ import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.*;
@@ -62,6 +63,8 @@ public class CarRestControllerTest {
 
     private MockMvc mockMvc;
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
+    private static final int MIN_VALID_MODEL_YEAR = 1885;
+    private static final int MAX_VALID_MODEL_YEAR = 3000;
 
     @Rule
     public TestRule watcher = new CarRestControllerTestWatcher();
@@ -170,7 +173,7 @@ public class CarRestControllerTest {
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -183,7 +186,37 @@ public class CarRestControllerTest {
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addCarYear1884() throws Exception {
+        doAddCarTestWithYear(1884);
+    }
+
+    @Test
+    public void addCarYear1885() throws Exception {
+        doAddCarTestWithYear(1885);
+    }
+
+    @Test
+    public void addCarYear1886() throws Exception {
+        doAddCarTestWithYear(1886);
+    }
+
+    @Test
+    public void addCarYear2999() throws Exception {
+        doAddCarTestWithYear(2999);
+    }
+
+    @Test
+    public void addCarYear3000() throws Exception {
+        doAddCarTestWithYear(3000);
+    }
+
+    @Test
+    public void addCarYear3001() throws Exception {
+        doAddCarTestWithYear(3001);
     }
 
     @Test
@@ -325,6 +358,66 @@ public class CarRestControllerTest {
                 .content(carJson))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void editCarNoYear() throws Exception {
+        Long carId = carList.get(0).getId();
+        carNode.put("id", carId);
+        carNode.remove("year");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void editCarEmptyYear() throws Exception {
+        Long carId = carList.get(0).getId();
+        carNode.put("id", carId);
+        carNode.put("year", "");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void editCarYear1884() throws Exception {
+        doEditCarTestWithYear(1884);
+    }
+
+    @Test
+    public void editCarYear1885() throws Exception {
+        doEditCarTestWithYear(1885);
+    }
+
+    @Test
+    public void editCarYear1886() throws Exception {
+        doEditCarTestWithYear(1886);
+    }
+
+    @Test
+    public void editCarYear2999() throws Exception {
+        doEditCarTestWithYear(2999);
+    }
+
+    @Test
+    public void editCarYear3000() throws Exception {
+        doEditCarTestWithYear(3000);
+    }
+
+    @Test
+    public void editCarYear3001() throws Exception {
+        doEditCarTestWithYear(3001);
     }
 
     @Test
@@ -615,6 +708,49 @@ public class CarRestControllerTest {
         arrayNode.add(trimLevelNode1);
         arrayNode.add(trimLevelNode2);
         carNode.putArray("trimLevels").addAll(arrayNode);
+    }
+
+    private void doAddCarTestWithYear(int year) throws Exception {
+        carNode.put("year", year);
+        String carJson = carNode.toString();
+        System.out.println("carJson;\n" + carJson);
+
+        ResultMatcher expectedStatus;
+
+        if (year < MIN_VALID_MODEL_YEAR || year > MAX_VALID_MODEL_YEAR) {
+            expectedStatus = status().isBadRequest();
+        } else {
+            expectedStatus = status().isOk();
+        }
+
+        mockMvc.perform(post(carsUrl)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(expectedStatus);
+
+    }
+
+    private void doEditCarTestWithYear(int year) throws Exception {
+        Long carId = carList.get(0).getId();
+        carNode.put("id", carId);
+        carNode.put("year", year);
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        ResultMatcher expectedStatus;
+
+        if (year < MIN_VALID_MODEL_YEAR || year > MAX_VALID_MODEL_YEAR) {
+            expectedStatus = status().isBadRequest();
+        } else {
+            expectedStatus = status().isOk();
+        }
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(expectedStatus);
     }
 
     private class CarRestControllerTestWatcher extends TestWatcher {
