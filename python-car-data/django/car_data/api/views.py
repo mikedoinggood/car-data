@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
 from django.db.models import Count
 from django.http import HttpResponse
@@ -13,13 +14,42 @@ from oauth2_provider.views.generic import ProtectedResourceView
 from .models import Car, TrimLevel
 
 def cars_get(request):
-    car_list = []
+    page_size = 20
+    sort = request.GET.get('sort', '')
+    page_number = request.GET.get('page', '')
 
-    for car in Car.objects.all().iterator():
-        car_dict = convert_car_to_dict(car)
-        car_list.append(car_dict)
+    if sort == "newest":
+        all_cars_list = Car.objects.order_by('-year', 'make').all()
+    elif sort == "oldest":
+        all_cars_list = Car.objects.order_by('year', 'make').all()
+    else:
+        all_cars_list = Car.objects.order_by('make').all()
 
-    return HttpResponse(json.dumps(car_list, indent=4), content_type='application/json')
+    paginator = Paginator(all_cars_list, page_size)
+
+    try:
+        page_number = int(page_number)
+    except ValueError as e:
+        page_number = 1
+
+    car_page = {
+        'number': page_number,
+        'totalPages': paginator.num_pages
+    }
+
+    try:
+        cars = paginator.page(page_number)
+        car_list = []
+
+        for car in cars.object_list.all().iterator():
+            car_dict = convert_car_to_dict(car)
+            car_list.append(car_dict)
+
+        car_page['content'] = car_list
+    except EmptyPage:
+        car_page['content'] = []
+
+    return HttpResponse(json.dumps(car_page, indent=4), content_type='application/json')
 
 def cars_post(request):
     data = json.loads(request.body)
@@ -116,20 +146,20 @@ def validate_car(year, make, model, trim_levels):
     return True
 
 def stats_get(self, request, *arg, **kwargs):
-    makeCounts = Car.objects.values('make').annotate(count=Count('id'))
-    yearCounts = Car.objects.values('year').annotate(count=Count('id'))
+    make_counts = Car.objects.values('make').annotate(count=Count('id'))
+    year_counts = Car.objects.values('year').annotate(count=Count('id'))
 
-    makeData = {}
-    for item in makeCounts:
-        makeData[item['make']] = item['count']
+    make_data = {}
+    for item in make_counts:
+        make_data[item['make']] = item['count']
 
-    yearData = {}
-    for item in yearCounts:
-        yearData[item['year']] = item['count']
+    year_data = {}
+    for item in year_counts:
+        year_data[item['year']] = item['count']
 
     data = {
-        'makeCounts': makeData,
-        'yearCounts': yearData,
+        'makeCounts': make_data,
+        'yearCounts': year_data,
     }
 
     return HttpResponse(json.dumps(data, indent=4), content_type='application/json')

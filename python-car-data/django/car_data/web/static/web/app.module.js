@@ -12,6 +12,7 @@ factory('CarService', ['$resource',
   function($resource) {
     return $resource('/api/resources/cars/:carId', null,
       {
+        'query':  {method: 'GET', isArray: false},
         'update': { method:'PUT' }
       });
   }

@@ -6,12 +6,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.glicerial.samples.cardataapi.entity.Car;
@@ -37,16 +43,42 @@ public class CarRestController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = { "/api/cars", "/resources/cars" }, produces = {MediaType.APPLICATION_JSON_VALUE, "application/json"})
-    List<Car> readCars() {
-        Iterable<Car> carIterable = carRepository.findAll();
+    Page<Car> readCars(@RequestParam("sort") Optional<String> sort, @RequestParam("page") Optional<String> page) {
         List<Car> carList = new ArrayList<Car>();
-        Iterator<Car> iterator = carIterable.iterator();
+        Direction sortDirection = Sort.Direction.ASC;
+        String sortProperty = "make";
+        int pageSize = 20;
+        int pageNumber = 1;
 
+        if (page.isPresent()) {
+            try {
+                pageNumber = Integer.max(1, Integer.parseInt(page.get()));
+            } catch (NumberFormatException ex) {
+                pageNumber = 1;
+            }
+        }
+
+        if (sort.isPresent()) {
+            switch (sort.get()) {
+                case "oldest":
+                    sortProperty = "year";
+                    break;
+                case "newest":
+                    sortDirection = Sort.Direction.DESC;
+                    sortProperty = "year";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        Page<Car> carsPage = carRepository.findAll(new PageRequest(pageNumber - 1, pageSize, sortDirection, sortProperty, "make"));
+        Iterator<Car> iterator = carsPage.iterator();
         while(iterator.hasNext()) {
             carList.add(iterator.next());
         }
 
-        return carList;
+        return carsPage;
     }    
 
     @RequestMapping(method = RequestMethod.GET, value = { "/api/cars/{id}", "/resources/cars/{id}" }, produces = {MediaType.APPLICATION_JSON_VALUE, "application/json"})

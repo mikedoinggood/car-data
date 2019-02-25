@@ -46,8 +46,9 @@ class CarDataTest(TestCase):
         print("\nResponse:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()[0]['trimLevels']), 2)
-        self.assertEqual(len(response.json()), 2)
+        self.assertEqual(len(response.json()['content'][0]['trimLevels']), 0)
+        self.assertEqual(len(response.json()['content'][1]['trimLevels']), 2)
+        self.assertEqual(len(response.json()['content']), 2)
 
     def test_read_one_car(self):
         car_id = self.car_list[0].id
