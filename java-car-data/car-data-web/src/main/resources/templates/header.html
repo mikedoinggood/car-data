@@ -314,7 +314,7 @@
               <li class="dropdown">
                 <form th:action="@{/logout}" id="logoutform" method="post">
                 </form>        
-                <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">Logged in as <strong><span sec:authentication="name"></span></strong>
+                <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">Logged in as <strong sec:authentication="name"></strong>
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">

@@ -19,7 +19,10 @@ var CarsTable = function (_React$Component) {
     _this.state = {
       error: null,
       isLoaded: false,
-      cars: []
+      cars: [],
+      sort: null,
+      page: 1,
+      totalPages: 1
     };
     return _this;
   }
@@ -29,7 +32,6 @@ var CarsTable = function (_React$Component) {
     value: function process(cars) {
       cars.map(function (car) {
         var trimLevelsArray = [];
-        var trimLevelsString = "";
         car.trimLevels.sort(sortTrimLevels);
 
         for (var i = 0; i < car.trimLevels.length; i++) {
@@ -42,18 +44,65 @@ var CarsTable = function (_React$Component) {
       });
     }
   }, {
+    key: "getSortOption",
+    value: function getSortOption(value) {
+      var sortOption;
+
+      switch (value) {
+        case "oldest":
+          sortOption = "oldest";
+          break;
+        case "newest":
+          sortOption = "newest";
+          break;
+        default:
+          sortOption = "make";
+      }
+
+      this.setState({
+        sort: sortOption
+      });
+    }
+  }, {
+    key: "handleSelect",
+    value: function handleSelect(event) {
+      switch (event.target.value) {
+        case "make":
+          window.location.href = "/";
+          break;
+        case "oldest":
+          window.location.href = "?sort=oldest";
+          break;
+        case "newest":
+          window.location.href = "?sort=newest";
+          break;
+      }
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
+      var requestUrl = "/resources/cars";
+      var browserUrl = new URL(window.location.href);
+      var sortParam = browserUrl.searchParams.get("sort");
+      var pageParam = browserUrl.searchParams.get("page");
+
+      requestUrl = pageParam ? requestUrl + "?page=" + pageParam : requestUrl + "?page=1";
+      requestUrl = sortParam ? requestUrl + "&sort=" + sortParam : requestUrl;
+
+      this.getSortOption(sortParam);
+
       var request = $.ajax({
-        url: "/resources/cars",
+        url: requestUrl,
         method: "GET"
       });
 
       request.done(function (data) {
-        this.process(data);
+        this.process(data.content);
         this.setState({
           isLoaded: true,
-          cars: data
+          cars: data.content,
+          page: data.number + 1,
+          totalPages: data.totalPages
         });
       }.bind(this));
 
@@ -70,7 +119,9 @@ var CarsTable = function (_React$Component) {
       var _state = this.state,
           error = _state.error,
           isLoaded = _state.isLoaded,
-          cars = _state.cars;
+          cars = _state.cars,
+          sort = _state.sort,
+          page = _state.page;
 
 
       if (error) {
@@ -93,82 +144,164 @@ var CarsTable = function (_React$Component) {
           "No cars found."
         );
       } else {
-        return React.createElement(
-          "table",
-          { className: "table", id: "carstable" },
-          React.createElement(
-            "thead",
+        var prev = void 0;
+        var next = void 0;
+        var params = this.state.sort == "make" ? "?page=" : "?sort=" + this.state.sort + "&page=";
+
+        if (this.state.page < this.state.totalPages) {
+          next = React.createElement(
+            "span",
             null,
             React.createElement(
-              "tr",
+              "a",
+              { href: params + (this.state.page + 1) },
+              "[Next]"
+            )
+          );
+        }
+
+        if (this.state.page > 1) {
+          prev = React.createElement(
+            "span",
+            null,
+            React.createElement(
+              "a",
+              { href: params + (this.state.page - 1) },
+              "[Previous]"
+            )
+          );
+        }
+
+        return React.createElement(
+          "div",
+          null,
+          React.createElement(
+            "div",
+            null,
+            React.createElement(
+              "span",
               null,
               React.createElement(
-                "th",
-                null,
-                "Year"
-              ),
+                "label",
+                { "for": "sortselect" },
+                "Sort by:\xA0"
+              )
+            ),
+            React.createElement(
+              "span",
+              null,
               React.createElement(
-                "th",
-                null,
-                "Make"
-              ),
-              React.createElement(
-                "th",
-                null,
-                "Model"
-              ),
-              React.createElement(
-                "th",
-                null,
-                "Trim Levels"
+                "select",
+                { value: this.state.sort, id: "sortselect", onChange: this.handleSelect },
+                React.createElement(
+                  "option",
+                  { value: "make" },
+                  "Make"
+                ),
+                React.createElement(
+                  "option",
+                  { value: "oldest" },
+                  "Oldest Year First"
+                ),
+                React.createElement(
+                  "option",
+                  { value: "newest" },
+                  "Newest Year First"
+                )
               )
             )
           ),
+          React.createElement("br", null),
           React.createElement(
-            "tbody",
-            { id: "tablebody" },
-            cars.map(function (car) {
-              return React.createElement(
+            "table",
+            { className: "table", id: "carstable" },
+            React.createElement(
+              "thead",
+              null,
+              React.createElement(
                 "tr",
-                { key: car.id },
+                null,
                 React.createElement(
-                  "td",
+                  "th",
                   null,
-                  React.createElement(
-                    "a",
-                    { href: "cars/" + car.id },
-                    car.year
-                  )
+                  "Year"
                 ),
                 React.createElement(
-                  "td",
+                  "th",
                   null,
-                  React.createElement(
-                    "a",
-                    { href: "cars/" + car.id },
-                    car.make
-                  )
+                  "Make"
                 ),
                 React.createElement(
-                  "td",
+                  "th",
                   null,
-                  React.createElement(
-                    "a",
-                    { href: "cars/" + car.id },
-                    car.model
-                  )
+                  "Model"
                 ),
                 React.createElement(
-                  "td",
+                  "th",
                   null,
-                  React.createElement(
-                    "a",
-                    { href: "cars/" + car.id },
-                    car.trimLevelsString
-                  )
+                  "Trim Levels"
                 )
-              );
-            })
+              )
+            ),
+            React.createElement(
+              "tbody",
+              { id: "tablebody" },
+              cars.map(function (car) {
+                return React.createElement(
+                  "tr",
+                  { key: car.id },
+                  React.createElement(
+                    "td",
+                    null,
+                    React.createElement(
+                      "a",
+                      { href: "cars/" + car.id },
+                      car.year
+                    )
+                  ),
+                  React.createElement(
+                    "td",
+                    null,
+                    React.createElement(
+                      "a",
+                      { href: "cars/" + car.id },
+                      car.make
+                    )
+                  ),
+                  React.createElement(
+                    "td",
+                    null,
+                    React.createElement(
+                      "a",
+                      { href: "cars/" + car.id },
+                      car.model
+                    )
+                  ),
+                  React.createElement(
+                    "td",
+                    null,
+                    React.createElement(
+                      "a",
+                      { href: "cars/" + car.id },
+                      car.trimLevelsString
+                    )
+                  )
+                );
+              })
+            )
+          ),
+          React.createElement(
+            "div",
+            null,
+            "Page ",
+            this.state.page
+          ),
+          React.createElement(
+            "div",
+            null,
+            prev,
+            " ",
+            next
           )
         );
       }

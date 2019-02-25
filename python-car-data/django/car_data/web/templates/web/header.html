@@ -308,7 +308,7 @@
               <form action="/logout" id="logoutform" method="post">
                 {% csrf_token %}
               </form>
-              <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">Logged in as <strong><span>{{ user.username }}</span></strong>
+              <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">Logged in as <strong>{{ user.username }}</strong>
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu dropdown-menu-right">

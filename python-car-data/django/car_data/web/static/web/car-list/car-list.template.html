@@ -3,6 +3,15 @@
   <h4>No cars found.</h4>
 </div>
 <div ng-if="$ctrl.carsFound" class="table-responsive">
+  <div>
+    <label>Sort by:</label>
+    <select
+      ng-options="option.name for option in $ctrl.sortOptions track by option.id"
+      ng-model="$ctrl.selectedSortOption"
+      ng-change="$ctrl.changeSort()">
+    </select>
+  </div>
+  <br>
   <table id="carstable" class="table">
     <thead>
       <tr>
@@ -29,4 +38,9 @@
       </tr>
     </tbody>
   </table>
+  <div>Page {{ $ctrl.page }}</div>
+  <div>
+    <span ng-if="$ctrl.previousPageLink"><a href="{{$ctrl.previousPageLink}}">[Previous]</a></span>
+    <span ng-if="$ctrl.nextPageLink"><a href="{{$ctrl.nextPageLink}}">[Next]</a></span>
+  </div>
 </div>

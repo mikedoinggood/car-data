@@ -124,15 +124,15 @@ public class CarRestControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].year", is(carList.get(0).getYear())))
-                .andExpect(jsonPath("$[0].make", is(carList.get(0).getMake())))
-                .andExpect(jsonPath("$[0].model", is(carList.get(0).getModel())))
-                .andExpect(jsonPath("$[0].trimLevels", hasSize(3)))
-                .andExpect(jsonPath("$[1].year", is(carList.get(1).getYear())))
-                .andExpect(jsonPath("$[1].make", is(carList.get(1).getMake())))
-                .andExpect(jsonPath("$[1].model", is(carList.get(1).getModel())))
-                .andExpect(jsonPath("$[1].trimLevels", hasSize(0)));
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].year", is(carList.get(0).getYear())))
+                .andExpect(jsonPath("$.content[0].make", is(carList.get(0).getMake())))
+                .andExpect(jsonPath("$.content[0].model", is(carList.get(0).getModel())))
+                .andExpect(jsonPath("$.content[0].trimLevels", hasSize(3)))
+                .andExpect(jsonPath("$.content[1].year", is(carList.get(1).getYear())))
+                .andExpect(jsonPath("$.content[1].make", is(carList.get(1).getMake())))
+                .andExpect(jsonPath("$.content[1].model", is(carList.get(1).getModel())))
+                .andExpect(jsonPath("$.content[1].trimLevels", hasSize(0)));
     }
 
     @Test
