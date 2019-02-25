@@ -1,0 +1,33 @@
+<% content_for :title, "Login" %>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#username").focus();
+  });
+</script>    
+<div class="container">
+  <div class="col-md-8 offset-md-2 col-lg-5 offset-lg-3">
+    <form id="loginform" th:action="/login" method="post">
+      <h3>Login</h3>
+      <p>&lpar;Login with Username &equals; &quot;user&quot;, Password &equals; &quot;password&quot;&rpar;</p>
+      <br/>
+      <div class="form-group">
+        <label for="session_username">Username:</label>
+        <input class="form-control" type="text" name="session[username]" id="username" />
+      </div>
+      <div class="form-group">
+        <label for="session_password">Password:</label>
+        <input class="form-control" type="password" name="session[password]" id="password" />
+      </div>
+      <% if flash[:danger] %>
+        <div>
+          <p class="text-danger"><%= flash[:danger] %></p>
+        </div>
+      <% end %>
+      <br/>
+      <div class="form-group">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+        <input class="btn btn-block btn-lg btn-primary" type="submit" value="Sign In" />
+      </div>
+    </form>
+  </div>
+</div>
