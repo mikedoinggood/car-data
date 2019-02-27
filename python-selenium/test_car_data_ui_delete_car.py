@@ -25,6 +25,8 @@ class DeleteCar(unittest.TestCase):
             'trim_levels': [generate_random_trim_level() for _ in range(3)],
         }
 
+        self.car['car_string'] = get_car_string(self.car)
+
         web_driver_utility = WebDriverUtility()
         self.driver = web_driver_utility.get_new_web_driver()
         self.driver.get(web_driver_utility.get_home_page_url())
@@ -35,16 +37,10 @@ class DeleteCar(unittest.TestCase):
         self.login()
         self.add_car()
         self.main_page.navigate_to_car_detail_page(self.car)
-        LOG.info("Navigated to car detail page of %s", get_car_string(self.car))
+        LOG.info("Navigated to car detail page of %s", self.car['car_string'])
         self.delete_car()
 
-        no_such_element_assertion_error = False
-        try:
-            self.main_page.find_car_row(self.car)
-        except NoSuchElementException:
-            no_such_element_assertion_error = True
-
-        self.assertEqual(no_such_element_assertion_error, True)
+        self.assertIsNone(self.main_page.find_car_row(self.car))
 
     def tearDown(self):
         LOG.info("Cleaning up...")
@@ -63,7 +59,7 @@ class DeleteCar(unittest.TestCase):
         add_car_page = AddCarPage(self.driver)
         add_car_page.add_car(self.car)
 
-        LOG.info("Added car: %s", get_car_string(self.car))
+        LOG.info("Added car: %s", self.car['car_string'])
 
     def delete_car(self):
         car_detail_page = CarDetailPage(self.driver)
@@ -76,7 +72,7 @@ class DeleteCar(unittest.TestCase):
         wait.until(expected_conditions.alert_is_present())
         self.driver.switch_to.alert.accept()
 
-        LOG.info("Deleted car: %s", get_car_string(self.car))
+        LOG.info("Deleted car: %s", self.car['car_string'])
 
 if __name__ == "__main__":
     unittest.main()

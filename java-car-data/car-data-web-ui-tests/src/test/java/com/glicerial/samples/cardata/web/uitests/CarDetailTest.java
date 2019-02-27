@@ -21,6 +21,7 @@ public class CarDetailTest {
     private WebDriver driver;
     private MainPage mainPage;
     private Map<String, String> carMap;
+    private CarDataUtility carDataUtility = new CarDataUtility();
 
     @Before
     public void setup() {
@@ -30,6 +31,7 @@ public class CarDetailTest {
         carMap.put("make", "Honda");
         carMap.put("model", "Civic");
         setupTrimLevels(carMap);
+        carMap.put("carString", carDataUtility.getCarString(carMap));
 
         WebDriverUtility webDriverUtility = new WebDriverUtility();
         driver = webDriverUtility.getNewWebDriver();

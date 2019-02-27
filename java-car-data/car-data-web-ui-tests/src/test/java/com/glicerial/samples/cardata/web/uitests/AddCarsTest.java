@@ -8,7 +8,6 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -54,6 +53,10 @@ public class AddCarsTest {
         carMap3.put("found", "false");
         carMapList.add(carMap3); 
 
+        for (Map<String, String> carMap : carMapList) {
+            carMap.put("carString", carDataUtility.getCarString(carMap));
+        }
+
         WebDriverUtility webDriverUtility = new WebDriverUtility();
         driver = webDriverUtility.getNewWebDriver();
         driver.get(webDriverUtility.getHomePageUrl());
@@ -82,27 +85,15 @@ public class AddCarsTest {
             mainPage.clickAddCarLink();
             AddCarPage addCarPage = new AddCarPage(driver);
             addCarPage.addCar(carMap);
-            System.out.println("Added car: " + carDataUtility.getCarString(carMap));
         }
     }
 
     private void checkCars() {
-        List<WebElement> carRows = mainPage.getCarRows();
-
-        for (WebElement row : carRows) {
-            List<WebElement> rowColumns = row.findElements(By.xpath(".//td"));
-
-            for (Map<String, String> carMap : carMapList) {
-                if (mainPage.checkMakeModelYear(rowColumns, carMap) && mainPage.checkTrimLevels(rowColumns, carMap)) {
-                    carMap.put("found", "true");
-                    System.out.println("Found car: " + carDataUtility.getCarString(carMap));
-                    break;
-                }
-            }
-        }
+        Map<String, WebElement> carRows = mainPage.findMultipleCarRows(carMapList);
 
         for (Map<String, String> carMap : carMapList) {
-            assertTrue("Could not find car: " + carDataUtility.getCarString(carMap), Boolean.valueOf(carMap.get("found")));
+            String carString = carMap.get("carString");
+            assertNotNull("Could not find car: " + carString, carRows.get(carString));
         }
     }
 

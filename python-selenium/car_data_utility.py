@@ -7,5 +7,5 @@ def generate_random_trim_level():
     return random_trim_level
 
 def get_car_string(car):
-    return car['year'] + " " + car['make'] + " " + car['model'] + " With trim levels: " + ",".join(car['trim_levels'])
+    return car['year'] + " " + car['make'] + " " + car['model'] + " With trim levels: " + ",".join(sorted(car['trim_levels']))
 

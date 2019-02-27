@@ -23,6 +23,8 @@ class CarDetail(unittest.TestCase):
             'trim_levels': [generate_random_trim_level() for _ in range(3)],
         }
 
+        self.car['car_string'] = get_car_string(self.car)
+
         web_driver_utility = WebDriverUtility()
         self.driver = web_driver_utility.get_new_web_driver()
         self.driver.get(web_driver_utility.get_home_page_url())
@@ -33,7 +35,7 @@ class CarDetail(unittest.TestCase):
         self.login()
         self.add_car()
         self.main_page.navigate_to_car_detail_page(self.car)
-        LOG.info("Navigated to car detail page of %s", get_car_string(self.car))
+        LOG.info("Navigated to car detail page of %s", self.car['car_string'])
         self.check_car_detail_page()
 
     def tearDown(self):
@@ -53,7 +55,7 @@ class CarDetail(unittest.TestCase):
         add_car_page = AddCarPage(self.driver)
         add_car_page.add_car(self.car)
 
-        LOG.info("Added car: %s", get_car_string(self.car))
+        LOG.info("Added car: %s", self.car['car_string'])
 
     def check_car_detail_page(self):
         LOG.info("Checking car detail page...")

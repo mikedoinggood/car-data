@@ -80,8 +80,9 @@ public class AddCarPage {
         WebDriverWait wait = new WebDriverWait(driver, 5);
         wait.until(ExpectedConditions.alertIsPresent());
         driver.switchTo().alert().accept();
+        System.out.println("Added car: " + carMap.get("carString"));
 
         // Wait for javascript redirect
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='maincontent']//table[@id='carstable']")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id='carstable']")));
     }
 }

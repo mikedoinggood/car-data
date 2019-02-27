@@ -24,6 +24,8 @@ class EditCar(unittest.TestCase):
             'trim_levels': [generate_random_trim_level() for _ in range(3)],
         }
 
+        self.car['car_string'] = get_car_string(self.car)
+
         web_driver_utility = WebDriverUtility()
         self.driver = web_driver_utility.get_new_web_driver()
         self.driver.get(web_driver_utility.get_home_page_url())
@@ -45,6 +47,7 @@ class EditCar(unittest.TestCase):
             random_trim_levels.append(generate_random_trim_level())
 
         self.car['trim_levels'] = random_trim_levels
+        self.car['car_string'] = get_car_string(self.car)
 
         edit_car_page = EditCarPage(self.driver)
         edit_car_page.edit_year(self.car['year'])
@@ -53,7 +56,7 @@ class EditCar(unittest.TestCase):
         self.edit_trim_levels(edit_car_page)
         edit_car_page.click_submit_car_button()
 
-        LOG.info("Edited car to: %s", get_car_string(self.car))
+        LOG.info("Edited car to: %s", self.car['car_string'])
 
         self.assertIsNotNone(self.main_page.find_car_row(self.car))
 
@@ -64,7 +67,7 @@ class EditCar(unittest.TestCase):
         self.delete_trim_level(edit_car_page)
         edit_car_page.click_submit_car_button()
 
-        LOG.info("Edited car to: %s", get_car_string(self.car))
+        LOG.info("Edited car to: %s", self.car['car_string'])
 
         self.assertIsNotNone(self.main_page.find_car_row(self.car))
 
@@ -75,7 +78,7 @@ class EditCar(unittest.TestCase):
         self.add_trim_level(edit_car_page)
         edit_car_page.click_submit_car_button()
 
-        LOG.info("Edited car to: %s", get_car_string(self.car))
+        LOG.info("Edited car to: %s", self.car['car_string'])
 
         self.assertIsNotNone(self.main_page.find_car_row(self.car))
 
@@ -96,7 +99,7 @@ class EditCar(unittest.TestCase):
         add_car_page = AddCarPage(self.driver)
         add_car_page.add_car(self.car)
 
-        LOG.info("Added car: %s", get_car_string(self.car))
+        LOG.info("Added car: %s", self.car['car_string'])
 
     def navigate_to_edit_car_page(self):
         self.main_page.navigate_to_car_detail_page(self.car)
@@ -107,6 +110,7 @@ class EditCar(unittest.TestCase):
         trim_level_to_add = generate_random_trim_level()
         LOG.info("Trim level to add: %s", trim_level_to_add)
         self.car['trim_levels'].append(trim_level_to_add)
+        self.car['car_string'] = get_car_string(self.car)
 
         edit_car_page.click_add_trim_level_button()
         trim_level_inputs = edit_car_page.trim_levels.find_elements(By.XPATH, ".//input")
@@ -122,6 +126,7 @@ class EditCar(unittest.TestCase):
     def delete_trim_level(self, edit_car_page):
         trim_level_to_delete = self.car['trim_levels'].pop()
         LOG.info("Trim level to delete: %s", trim_level_to_delete)
+        self.car['car_string'] = get_car_string(self.car)
 
         trim_level_input_groups = edit_car_page.trim_levels.find_elements(By.XPATH, ".//div[contains(@class, 'input-group')]")
         for input_group in trim_level_input_groups:
