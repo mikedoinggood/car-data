@@ -3,8 +3,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
+from car_data_utility import get_car_string
+from logging_utility import get_logger
 from .locators import MainPageLocators
 from .page import BasePage
+
+""" Logging setup """
+LOG = get_logger(__name__)
 
 class MainPage(BasePage):
     def click_add_car_link(self):
@@ -23,26 +28,73 @@ class MainPage(BasePage):
         row_columns[0].find_element(By.TAG_NAME, "a").click()
 
     def find_car_row(self, car):
-        car_rows = self.get_car_rows()
+        LOG.info("Finding car row...")
 
-        for row in car_rows:
-            row_columns = row.find_elements(By.XPATH, ".//td")
+        while True:
+            car_rows = self.get_car_rows()
 
-            if self.check_year_make_model(car, row_columns) and self.check_trim_levels(car, row_columns[3]):
-                return row
+            for row in car_rows:
+                row_car = self.car_row_to_car_dict(row)
+                row_car_string = get_car_string(row_car)
 
-        raise NoSuchElementException
+                if row_car_string == car['car_string']:
+                    LOG.info("Found car: {}".format(row_car_string))
+                    return row
 
-    def check_year_make_model(self, car, td_elements):
-        year = td_elements[0].text
-        make = td_elements[1].text
-        model = td_elements[2].text
+            clicked_next_page_link = self.click_next_page_link()
 
-        if car['year'] == year and car['make'] == make and car['model'] == model:
-            return True
+            if not clicked_next_page_link:
+                break
 
-    def check_trim_levels(self, car, td_trim_levels):
-        td_trim_levels_list = td_trim_levels.text.split(", ")
+        return None
 
-        if sorted(td_trim_levels_list) == sorted(car['trim_levels']):
-            return True
+    def find_multiple_car_rows(self, car_list):
+        LOG.info("Finding multiple car rows...")
+        found_count = 0
+        found_car_rows = {}
+
+        for car in car_list:
+            found_car_rows[car['car_string']] = None
+
+        while True:
+            car_rows = self.get_car_rows()
+
+            for row in car_rows:
+                row_car = self.car_row_to_car_dict(row)
+                row_car_string = get_car_string(row_car)
+
+                if row_car_string in found_car_rows:
+                    LOG.info("Found car: {}".format(row_car_string))
+                    found_car_rows[row_car_string] = row
+                    found_count += 1
+
+                    if found_count == len(car_list):
+                        return found_car_rows
+
+
+            clicked_next_page_link = self.click_next_page_link()
+
+            if not clicked_next_page_link:
+                break
+
+        return found_car_rows
+
+    def click_next_page_link(self):
+        try:
+            next_page_link = self.driver.find_element(By.LINK_TEXT, "[Next]")
+            next_page_link.click()
+            LOG.info("Clicked next page link")
+        except NoSuchElementException as e:
+            return False
+
+        return True
+
+    def car_row_to_car_dict(self, row):
+        td_elements = row.find_elements(By.XPATH, ".//td")
+
+        return {
+            'year': td_elements[0].text,
+            'make': td_elements[1].text,
+            'model': td_elements[2].text,
+            'trim_levels': td_elements[3].text.split(", ")
+        }

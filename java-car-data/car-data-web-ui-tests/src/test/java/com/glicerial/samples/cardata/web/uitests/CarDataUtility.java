@@ -3,6 +3,7 @@ package com.glicerial.samples.cardata.web.uitests;
 import static org.apache.commons.text.CharacterPredicates.DIGITS;
 import static org.apache.commons.text.CharacterPredicates.LETTERS;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.text.RandomStringGenerator;
@@ -20,6 +21,10 @@ public class CarDataUtility {
     }
 
     public String getCarString(Map<String, String> carMap) {
+        String[] trimLevels = carMap.get("trimLevels").split("\n");
+        Arrays.sort(trimLevels);
+        carMap.put("trimLevels", String.join("\n", trimLevels));
+
         return carMap.get("year") + " " +
             carMap.get("make") + " " +
             carMap.get("model") +

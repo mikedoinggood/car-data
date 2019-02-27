@@ -31,8 +31,10 @@ class AddCars(unittest.TestCase):
         ]
 
         for car in self.car_list:
-            car['found'] = False
             car['trim_levels'] = [generate_random_trim_level() for _ in range(3)]
+
+        for car in self.car_list:
+            car['car_string'] = get_car_string(car)
 
         web_driver_utility = WebDriverUtility()
         self.driver = web_driver_utility.get_new_web_driver()
@@ -63,23 +65,13 @@ class AddCars(unittest.TestCase):
             add_car_page = AddCarPage(self.driver)
             add_car_page.add_car(car)
 
-            LOG.info("Added car: %s", get_car_string(car))
+            LOG.info("Added car: %s", car['car_string'])
 
     def check_cars(self):
-        LOG.info("Checking cars...")
-        car_rows = self.main_page.get_car_rows()
-
-        for row in car_rows:
-            td_elements = row.find_elements_by_css_selector("td")
-
-            for car in self.car_list:
-                if self.main_page.check_year_make_model(car, td_elements) and self.main_page.check_trim_levels(car, td_elements[3]):
-                    car['found'] = True
-                    LOG.info("Found car: %s", get_car_string(car))
-                    break
+        found_car_rows = self.main_page.find_multiple_car_rows(self.car_list)
 
         for car in self.car_list:
-            self.assertEqual(car['found'], True, msg="Could not find car: %s" % get_car_string(car))
+            self.assertIsNotNone(found_car_rows.get(car['car_string']), msg="Could not find car: %s" % car['car_string'])
 
 if __name__ == "__main__":
     unittest.main()

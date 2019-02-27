@@ -2,7 +2,6 @@ package com.glicerial.samples.cardata.web.uitests;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +20,7 @@ public class DeleteCarTest {
     private WebDriver driver;
     private MainPage mainPage;
     private Map<String, String> carMap;
+    private CarDataUtility carDataUtility = new CarDataUtility();
 
     @Before
     public void setup() {
@@ -30,6 +30,7 @@ public class DeleteCarTest {
         carMap.put("make", "Honda");
         carMap.put("model", "Civic");
         setupTrimLevels(carMap);
+        carMap.put("carString", carDataUtility.getCarString(carMap));
 
         WebDriverUtility webDriverUtility = new WebDriverUtility();
         driver = webDriverUtility.getNewWebDriver();
@@ -45,15 +46,7 @@ public class DeleteCarTest {
         mainPage.navigateToCarDetailPage(carMap);
         CarDetailPage carDetailPage = new CarDetailPage(driver);
         carDetailPage.clickDeleteCarButton();
-
-        boolean noSuchElementAssertionError = false;
-        try {
-            mainPage.findCarRow(carMap);
-        } catch (NoSuchElementException e) {
-            noSuchElementAssertionError = true;
-        }
-
-        assertTrue(noSuchElementAssertionError);
+        assertNull(mainPage.findCarRow(carMap));
     }
 
     @After

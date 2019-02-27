@@ -48,7 +48,7 @@ public class EditCarPage {
         driver.switchTo().alert().accept();
 
         // Wait for javascript redirect
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='maincontent']//table[@id='carstable']")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id='carstable']")));
     }
 
     public void editYear(String year) {

@@ -25,6 +25,7 @@ public class EditCarTest {
     private MainPage mainPage;
     private CarDataUtility utility;
     private Map<String, String> carMap;
+    private CarDataUtility carDataUtility = new CarDataUtility();
 
     @Before
     public void setup() {
@@ -35,7 +36,8 @@ public class EditCarTest {
         carMap.put("year", "2017");
         carMap.put("make", "Honda");
         carMap.put("model", "Civic");
-        setTrimLevels(carMap);
+        setupTrimLevels(carMap);
+        carMap.put("carString", carDataUtility.getCarString(carMap));
 
         WebDriverUtility webDriverUtility = new WebDriverUtility();
         driver = webDriverUtility.getNewWebDriver();
@@ -57,7 +59,8 @@ public class EditCarTest {
         carMap.put("year", "1991");
         carMap.put("make", "Toyota");
         carMap.put("model", "Corolla");
-        setTrimLevels(carMap);
+        setupTrimLevels(carMap);
+        carMap.put("carString", carDataUtility.getCarString(carMap));
 
         EditCarPage editCarPage = new EditCarPage(driver);
         editCarPage.editYear(carMap.get("year"));
@@ -110,7 +113,7 @@ public class EditCarTest {
         addCarPage.addCar(carMap);
     }
 
-    private void setTrimLevels(Map<String, String> carMap) {
+    private void setupTrimLevels(Map<String, String> carMap) {
         utility = new CarDataUtility();
 
         String randomTrim1 = utility.generateRandomTrimLevel();
@@ -139,6 +142,7 @@ public class EditCarTest {
         String trimLevelString = carMap.get("trimLevels");
         String newTrimLevel = utility.generateRandomTrimLevel();
         carMap.put("trimLevels", trimLevelString + "\n" + newTrimLevel);
+        carMap.put("carString", carDataUtility.getCarString(carMap));
         trimLevelString = carMap.get("trimLevels");
         String[] trimLevelsArray = trimLevelString.split("\n");
 
@@ -147,10 +151,8 @@ public class EditCarTest {
         int newTrimLevelIndex = trimLevelsArray.length - 1;
         editCarPage.clickAddTrimLevelButton();
         WebElement trimLevels = editCarPage.getTrimLevels();
-        List<WebElement> trimLevelInputGroups = trimLevels.findElements(By.className("input-group"));
-        WebElement newTrimLevelInputGroup = trimLevelInputGroups.get(newTrimLevelIndex);
-        WebElement newTrimLevelInput = newTrimLevelInputGroup.findElement(By.xpath(".//input"));
-        newTrimLevelInput.sendKeys(trimLevelsArray[newTrimLevelIndex]);
+        WebElement newTrimLevelInput = trimLevels.findElements(By.xpath(".//input")).get(newTrimLevelIndex);
+        newTrimLevelInput.sendKeys(newTrimLevel);
     }
 
     private void deleteTrimLevel(EditCarPage editCarPage) {
@@ -160,6 +162,7 @@ public class EditCarTest {
         String trimLevelToDelete = trimLevelsArray[0];
         System.out.println("Trim level to delete: " + trimLevelToDelete);
         carMap.put("trimLevels", trimLevelsArray[1] + "\n" + trimLevelsArray[2]);
+        carMap.put("carString", carDataUtility.getCarString(carMap));
 
         WebElement trimLevels = editCarPage.getTrimLevels();
         List<WebElement> trimLevelInputGroups = trimLevels.findElements(By.className("input-group"));
