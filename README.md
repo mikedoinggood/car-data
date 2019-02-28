@@ -1,10 +1,10 @@
 # car-data
-Python Django, Java Spring Boot and Android Demo
+Python Django, Java Spring Boot, Ruby on Rails and Android Demo
 
-- This project is meant to showcase the basics of building a web application that supports both a web browser client and also a native mobile client.
+- This project is meant to showcase the basics of building a web application that supports both a web browser client and also a native mobile client.  (Native mobile client currently only supported by Django and Spring Boot versions.)
 - The data being consumed represents a car with attributes of year, make, model and trim levels.
-- There are two versions of the web app, one that utilizes Spring Boot and the other using Django.
-- The Android client can interact with either one interchangably since they both authenticate and serve data in the same way, although the data will be different as they are not setup to use the same databases.
+- There are 3 versions of the web app, with versions in Spring Boot, Django, and Ruby on Rails.
+- The Android client can interact with the Django or Spring Boot versions.
 
 More details of the other components being used:
 
@@ -12,7 +12,7 @@ Django Version:
 - Django OAuth Toolkit
 - MySQL
 - AngularJS
-- Bootstrap
+- Bootstrap 3
 - Note: this project also requires additional steps of manually creating the Django user(s) and an OAuth2 client application entry
 
 Spring Boot Version:
@@ -22,8 +22,16 @@ Spring Boot Version:
 - MySQL
 - Redis
 - Thymeleaf
-- Bootstrap
 - jQuery
+- React
+- Bootstrap 3
+
+Ruby On Rails Version:
+- MySQL
+- jQuery
+- React
+- Webpacker
+- Bootstrap 4
 
 Android Client:
 - Retrofit
