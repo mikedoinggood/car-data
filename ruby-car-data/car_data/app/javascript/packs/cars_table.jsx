@@ -76,6 +76,15 @@ class CarsTable extends React.Component {
     this.getSortOption(sortParam);
   
     fetch(requestUrl)
+      .then(
+        (res) => {
+          if (res.ok) {
+            return res;
+          } else {
+            throw new Error(res.status + " " + res.statusText);
+          }
+        }
+      )
       .then(res => res.json())
       .then(
         (result) => {
@@ -100,7 +109,7 @@ class CarsTable extends React.Component {
   }
 
   render() {
-    const { error, isLoaded, cars, sort, page } = this.state;
+    const { error, isLoaded, cars, sort, page, totalPages } = this.state;
 
     if (error) {
       return <div>Error trying to retrieve cars.</div>;
@@ -111,24 +120,24 @@ class CarsTable extends React.Component {
     } else {
       let prev;
       let next;
-      let params = this.state.sort == "make" ? "?page=" : "?sort=" + this.state.sort + "&page=";
+      let params = sort == "make" ? "?page=" : "?sort=" + sort + "&page=";
 
-      if (this.state.page < this.state.totalPages) {
-        next = <span><a href={params + (this.state.page + 1)}>[Next]</a></span>;
+      if (page < totalPages) {
+        next = <span><a href={params + (page + 1)}>[Next]</a></span>;
       }
 
-      if (this.state.page > 1) {
-        prev = <span><a href={params + (this.state.page - 1)}>[Previous]</a></span>;
+      if (page > 1) {
+        prev = <span><a href={params + (page - 1)}>[Previous]</a></span>;
       }
 
       return (
         <div>
           <div>
             <span>
-              <label for="sortselect">Sort by:&nbsp;</label>
+              <label htmlFor="sortselect">Sort by:&nbsp;</label>
             </span>
             <span>
-              <select value={this.state.sort} id="sortselect" onChange={this.handleSelect}>
+              <select value={sort} id="sortselect" onChange={this.handleSelect}>
                 <option value="make">Make</option>
                 <option value="oldest">Oldest Year First</option>
                 <option value="newest">Newest Year First</option>
@@ -156,7 +165,7 @@ class CarsTable extends React.Component {
               ))}
             </tbody>
           </table>
-          <div>Page {this.state.page}</div>
+          <div>Page {page}</div>
           <div>{prev} {next}</div>
         </div>
       );
