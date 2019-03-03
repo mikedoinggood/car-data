@@ -53,6 +53,15 @@ class CarDetails extends React.Component {
 
   componentDidMount() {
     fetch("/api/cars/" + window.location.pathname.split('/')[2])
+      .then(
+        (res) => {
+          if (res.ok) {
+            return res;
+          } else {
+            throw new Error(res.status + " " + res.statusText);
+          }
+        }
+      )
       .then(res => res.json())
       .then(
         (result) => {

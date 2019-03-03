@@ -121,15 +121,15 @@ var CarsTable = function (_React$Component) {
           isLoaded = _state.isLoaded,
           cars = _state.cars,
           sort = _state.sort,
-          page = _state.page;
+          page = _state.page,
+          totalPages = _state.totalPages;
 
 
       if (error) {
         return React.createElement(
           "div",
           null,
-          "Error: ",
-          error.responseJSON.error
+          "Error trying to retrieve cars."
         );
       } else if (!isLoaded) {
         return React.createElement(
@@ -146,27 +146,27 @@ var CarsTable = function (_React$Component) {
       } else {
         var prev = void 0;
         var next = void 0;
-        var params = this.state.sort == "make" ? "?page=" : "?sort=" + this.state.sort + "&page=";
+        var params = sort == "make" ? "?page=" : "?sort=" + sort + "&page=";
 
-        if (this.state.page < this.state.totalPages) {
+        if (page < totalPages) {
           next = React.createElement(
             "span",
             null,
             React.createElement(
               "a",
-              { href: params + (this.state.page + 1) },
+              { href: params + (page + 1) },
               "[Next]"
             )
           );
         }
 
-        if (this.state.page > 1) {
+        if (page > 1) {
           prev = React.createElement(
             "span",
             null,
             React.createElement(
               "a",
-              { href: params + (this.state.page - 1) },
+              { href: params + (page - 1) },
               "[Previous]"
             )
           );
@@ -183,7 +183,7 @@ var CarsTable = function (_React$Component) {
               null,
               React.createElement(
                 "label",
-                { "for": "sortselect" },
+                { htmlFor: "sortselect" },
                 "Sort by:\xA0"
               )
             ),
@@ -192,7 +192,7 @@ var CarsTable = function (_React$Component) {
               null,
               React.createElement(
                 "select",
-                { value: this.state.sort, id: "sortselect", onChange: this.handleSelect },
+                { value: sort, id: "sortselect", onChange: this.handleSelect },
                 React.createElement(
                   "option",
                   { value: "make" },
@@ -294,7 +294,7 @@ var CarsTable = function (_React$Component) {
             "div",
             null,
             "Page ",
-            this.state.page
+            page
           ),
           React.createElement(
             "div",
