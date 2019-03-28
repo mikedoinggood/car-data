@@ -1,19 +1,16 @@
 <div>
-<script th:inline="javascript" type="text/javascript">
-/*<![CDATA[*/
-    $(document).ready(function() {
-        if (window.location.pathname.split('/')[1] == "addcar") {
-            addNewTrimLevelInput();
-        }
+  <script type="text/javascript">
+      $(document).ready(function() {
+          if (window.location.pathname.split('/')[1] == "addcar") {
+              addNewTrimLevelInput();
+          }
 
-        $("#addtrimlevelbutton").click(function() {
-            addNewTrimLevelInput();
-        });
-    });
-/*]]>*/
-</script>
-
-    <form id="carform">
+          $("#addtrimlevelbutton").click(function() {
+              addNewTrimLevelInput();
+          });
+      });
+  </script>
+  <form id="carform">
     <div class="form-group">
       <label for="year">Year:</label>
       <input class="form-control" type="number" name="year" id="year" />
@@ -41,6 +38,4 @@
       <button type="button" class="btn btn-primary" id="submitcarbutton">Submit</button>
     </div>
   </form>
-    </div>
-
 </div>

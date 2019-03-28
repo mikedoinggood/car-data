@@ -3,9 +3,6 @@
 $(document).ready(function() {
   $("#submitcarbutton").click(function() {
       $("#submitcarbutton").prop("disabled", true);
-  
-      var header = 'X-CSRF-Token';
-      var token = $("meta[name='csrf-token']").attr("content");
 
       var car = {};
       car.year = $("#year").val();
@@ -27,10 +24,7 @@ $(document).ready(function() {
           data: JSON.stringify(car),
           contentType: "application/json; charset=UTF-8",
           processData : false,
-          dataType: "json",
-          beforeSend: function(request) {
-              return request.setRequestHeader(header, token);
-          }
+          dataType: "json"
       });
   
       addCarRequest.done(function() {
