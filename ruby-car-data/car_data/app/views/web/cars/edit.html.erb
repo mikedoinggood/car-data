@@ -1,8 +1,6 @@
 <% content_for :title, "Edit Car" %>
 <script type="text/javascript">
   $(document).ready(function() {
-    var header = 'X-CSRF-Token';
-    var token = $("meta[name='csrf-token']").attr("content");
     var id = window.location.pathname.split('/')[2];
     var car = {};
     car.trim_levels_attributes = [];
@@ -95,10 +93,7 @@
             data: JSON.stringify(car),
             contentType: "application/json; charset=UTF-8",
             processData : false,
-            dataType: "json",
-            beforeSend: function(request) {
-                return request.setRequestHeader(header, token);
-            }
+            dataType: "json"
         });
 
         editCarRequest.done(function() {

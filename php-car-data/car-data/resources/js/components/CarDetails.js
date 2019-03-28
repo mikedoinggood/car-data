@@ -21,8 +21,6 @@ class CarDetails extends React.Component {
   }
 
   handleClickDelete() {
-    var header = 'X-CSRF-Token';
-    var token = $("meta[name='csrf-token']").attr("content");
     var carId = this.state.car.id;
 
     $("#deletecarbutton").prop("disabled", true);
@@ -31,10 +29,7 @@ class CarDetails extends React.Component {
       var deleteCarRequest = $.ajax({
         url:"/resources/cars/" + carId,
         dataType: "json",
-        method: "DELETE",
-        beforeSend: function(request) {
-          return request.setRequestHeader(header, token);
-        }
+        method: "DELETE"
       });
 
       deleteCarRequest.done(function(data) {
