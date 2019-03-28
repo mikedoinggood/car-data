@@ -61072,7 +61072,6 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-//require('./components/Example');
 
 
 __webpack_require__(/*! ./components/CarsTable */ "./resources/js/components/CarsTable.js");
