@@ -31,47 +31,54 @@ class Api::CarsController < ApplicationController
   def stats
     make_data = Car.group(:make).count
     year_data = Car.group(:year).count
-    
+
     render json: { makeCounts: make_data, yearCounts: year_data }
   end
 
   def show
-    car = Car.find(params[:id])
-    trim_level_list = car.trim_levels.map do |t|
-      { :id => t.id, :name => t.name}
-    end
+    begin
+      car = Car.find(params[:id])
 
-    render json: convert_car_to_dict(car)
+      render json: convert_car_to_dict(car)
+    rescue ActiveRecord::RecordNotFound
+      render json: {}, status: :not_found
+    end
   end
 
   def create
     if !is_car_valid?(params[:car])
       render json: {}, status: :bad_request
-      return
-    end
-  
-    car = Car.create(car_params)
+    else
+      car = Car.create(car_params)
 
-    render json: convert_car_to_dict(car)
+      render json: convert_car_to_dict(car)
+    end
   end
 
   def update
-    if !is_car_valid?(params[:car])
-      render json: {}, status: :bad_request
-      return
+    begin
+      car = Car.find(params[:id])
+
+      if !is_car_valid?(params[:car])
+        render json: {}, status: :bad_request
+      else
+        car.update(car_params)
+        render json: convert_car_to_dict(car)
+      end
+    rescue ActiveRecord::RecordNotFound
+      render json: {}, status: :not_found
     end
-
-    car = Car.find(params[:id])
-    car.update(car_params)
-
-    render json: {}
   end
 
   def destroy
-    car = Car.find(params[:id])
-    car.destroy
+    begin
+        car = Car.find(params[:id])
+        car.destroy
 
-    render json: {}
+        render json: {}
+    rescue ActiveRecord::RecordNotFound
+      render json: {}, status: :not_found
+    end
   end
 
   private
