@@ -2,8 +2,8 @@
 
 one:
   car: one
-  name: MyString
+  name: EX
 
 two:
-  car: two
-  name: MyString
+  car: one
+  name: LX
