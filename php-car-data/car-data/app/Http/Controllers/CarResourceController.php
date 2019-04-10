@@ -57,14 +57,17 @@ class CarResourceController extends Controller
         $car = new Car();
         $car->year = $request->year;
         $car->make = $request->make;
-	$car->model = $request->model;
+        $car->model = $request->model;
 
         DB::transaction(function() use ($car, $request) {
             $car->save();
-            $this->saveTrimLevels($car, $request->trimLevels);
+
+            if (!is_null($request->trimLevels)) {
+                $this->saveTrimLevels($car, $request->trimLevels);
+            }
         });
 
-	return response()->json();
+        return Car::with('trimLevels')->findOrFail($car->id);
     }
 
     /**
@@ -95,10 +98,13 @@ class CarResourceController extends Controller
 
         DB::transaction(function() use ($car, $request) {
             $car->save();
-            $this->saveTrimLevels($car, $request->trimLevels);
+
+            if (!is_null($request->trimLevels)) {
+                $this->saveTrimLevels($car, $request->trimLevels);
+            }
         });
 
-        return response()->json();
+        return Car::with('trimLevels')->findOrFail($car->id);
     }
 
     /**
@@ -124,15 +130,19 @@ class CarResourceController extends Controller
             'model' => 'required',
         ]);
 
-        foreach ($request->trimLevels as $trimLevel) {
-            $v = Validator::make($trimLevel, [
-                // No rules to define that always apply
-            ]);
-            // Require name if id exists
-            $v->sometimes('name', 'required', function ($input) {
-                return !is_null($input->get("id"));
-            });
-            $v->validate();
+        if (!is_null($request->trimLevels)) {
+            foreach ($request->trimLevels as $trimLevel) {
+                if (is_array($trimLevel)) {
+                    $v = Validator::make($trimLevel, [
+                        // No rules to define that always apply
+                    ]);
+                    // Require name if id exists
+                    $v->sometimes('name', 'required', function ($input) {
+                        return !is_null($input->get("id"));
+                    });
+                    $v->validate();
+                }
+            }
         }
     }
 
@@ -142,24 +152,26 @@ class CarResourceController extends Controller
      */
     private function saveTrimLevels($car, $requestTrimLevels) {
         foreach($requestTrimLevels as $trimLevel) {
-            // Deletes and updates
-            if (array_key_exists('id', $trimLevel)) {
-                $existingTrimLevel = $car->trimLevels()->where('id', $trimLevel["id"]);
+            if (is_array($trimLevel)) {
+                // Deletes and updates
+                if (array_key_exists('id', $trimLevel)) {
+                    $existingTrimLevel = $car->trimLevels()->where('id', $trimLevel["id"]);
 
-                if (!is_null($existingTrimLevel->get())) {
-                    if (array_key_exists('delete', $trimLevel)) {
-                        $existingTrimLevel->delete();
-                    } else {
-                        $existingTrimLevel->update(['name' => $trimLevel["name"]]);
+                    if (!is_null($existingTrimLevel->get())) {
+                        if (array_key_exists('delete', $trimLevel)) {
+                            $existingTrimLevel->delete();
+                        } else {
+                            $existingTrimLevel->update(['name' => $trimLevel["name"]]);
+                        }
                     }
-                }
-            // Adds
-            } else {
-                if (!trim($trimLevel["name"]) == "") {
-                    $newTrimLevel = new TrimLevel();
-                    $newTrimLevel->name = $trimLevel["name"];
-                    $newTrimLevel->car_id = $car->id;
-                    $car->trimLevels->add($newTrimLevel);
+                // Adds
+                } else {
+                    if (array_key_exists("name", $trimLevel) && !trim($trimLevel["name"]) == "") {
+                        $newTrimLevel = new TrimLevel();
+                        $newTrimLevel->name = $trimLevel["name"];
+                        $newTrimLevel->car_id = $car->id;
+                        $car->trimLevels->add($newTrimLevel);
+                    }
                 }
             }
         }
