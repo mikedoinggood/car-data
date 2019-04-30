@@ -24,9 +24,9 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     response_data = JSON.parse(@response.body)
 
     assert_response :success
-    assert_equal 0, response_data['content'][0]['trimLevels'].length
-    assert_equal 2, response_data['content'][1]['trimLevels'].length
-    assert_equal 2, response_data['content'].length
+    assert_equal 0, response_data["content"][0]["trimLevels"].length
+    assert_equal 2, response_data["content"][1]["trimLevels"].length
+    assert_equal 2, response_data["content"].length
   end
 
   test "read one car" do
@@ -36,12 +36,12 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     response_data = JSON.parse(@response.body)
 
     assert_response :success
-    assert_equal 2017, response_data['year']
-    assert_equal "Honda", response_data['make']
+    assert_equal 2017, response_data["year"]
+    assert_equal "Honda", response_data["make"]
     assert_equal "Accord", response_data["model"]
-    assert_equal "LX", response_data['trimLevels'][0]['name']
-    assert_equal "EX", response_data['trimLevels'][1]['name']
-    assert_equal 2, response_data['trimLevels'].length
+    assert_equal "LX", response_data["trimLevels"][0]["name"]
+    assert_equal "EX", response_data["trimLevels"][1]["name"]
+    assert_equal 2, response_data["trimLevels"].length
   end
 
   test "read one car not found" do
@@ -59,13 +59,13 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     response_data = JSON.parse(@response.body)
 
     assert_response :success
-    assert_equal 2010, response_data['year']
+    assert_equal 2010, response_data["year"]
     assert_equal "Toyota", response_data["make"]
     assert_equal "Prius", response_data["model"]
     assert_equal "Plus", response_data["trimLevels"][0]["name"]
     assert_equal "Premium", response_data["trimLevels"][1]["name"]
     assert_equal "Advanced", response_data["trimLevels"][2]["name"]
-    assert_equal 3, response_data['trimLevels'].length
+    assert_equal 3, response_data["trimLevels"].length
   end
 
   test "add car no year" do
@@ -80,6 +80,26 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
 
   test "add car empty year" do
     @test_car[:car][:year] = ""
+    print_test_car(@test_car)
+
+    post api_cars_url, params: @test_car, as: :json
+    print_response(@response)
+
+    assert_response :bad_request
+  end
+
+  test "add car non numeric year" do
+    @test_car[:car][:year] = "abc"
+    print_test_car(@test_car)
+
+    post api_cars_url, params: @test_car, as: :json
+    print_response(@response)
+
+    assert_response :bad_request
+  end
+
+  test "add car whitespace year" do
+    @test_car[:car][:year] = " "
     print_test_car(@test_car)
 
     post api_cars_url, params: @test_car, as: :json
@@ -132,6 +152,16 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
   end
 
+  test "add car whitespace make" do
+    @test_car[:car][:make] = " "
+    print_test_car(@test_car)
+
+    post api_cars_url, params: @test_car, as: :json
+    print_response(@response)
+
+    assert_response :bad_request
+  end
+
   test "add car no model" do
     @test_car[:car].delete(:model)
     print_test_car(@test_car)
@@ -144,6 +174,16 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
 
   test "add car empty model" do
     @test_car[:car][:model] = ""
+    print_test_car(@test_car)
+
+    post api_cars_url, params: @test_car, as: :json
+    print_response(@response)
+
+    assert_response :bad_request
+  end
+
+  test "add car whitespace model" do
+    @test_car[:car][:model] = " "
     print_test_car(@test_car)
 
     post api_cars_url, params: @test_car, as: :json
@@ -170,12 +210,38 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
 
     post api_cars_url, params: @test_car, as: :json
     print_response(@response)
+    response_data = JSON.parse(@response.body)
 
     assert_response :success
+    assert_equal 0, response_data["trimLevels"].length
   end
 
   test "add car new empty trim level" do
     @test_car[:car][:trim_levels_attributes].append({"name": ""})
+    print_test_car(@test_car)
+
+    post api_cars_url, params: @test_car, as: :json
+    print_response(@response)
+    response_data = JSON.parse(@response.body)
+
+    assert_response :success
+    assert_equal 3, response_data["trimLevels"].length
+  end
+
+  test "add car new whitespace trim level" do
+    @test_car[:car][:trim_levels_attributes].append({"name": " "})
+    print_test_car(@test_car)
+
+    post api_cars_url, params: @test_car, as: :json
+    print_response(@response)
+    response_data = JSON.parse(@response.body)
+
+    assert_response :success
+    assert_equal 3, response_data["trimLevels"].length
+  end
+
+  test "add car new blank trim level" do
+    @test_car[:car][:trim_levels_attributes].append({})
     print_test_car(@test_car)
 
     post api_cars_url, params: @test_car, as: :json
@@ -217,7 +283,7 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Prius", response_data["model"]
     assert_equal "A", response_data["trimLevels"][0]["name"]
     assert_equal "B", response_data["trimLevels"][1]["name"]
-    assert_equal 2, response_data['trimLevels'].length
+    assert_equal 2, response_data["trimLevels"].length
   end
 
   test "edit car not found" do
@@ -240,6 +306,28 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
 
   test "edit car empty year" do
     @test_car[:car][:year] = ""
+    print_test_car(@test_car)
+
+    existing_car = cars(:one)
+    put api_cars_url + "/#{existing_car.id}", params: @test_car, as: :json
+    print_response(@response)
+
+    assert_response :bad_request
+  end
+
+  test "edit car non numeric year" do
+    @test_car[:car][:year] = "abc"
+    print_test_car(@test_car)
+
+    existing_car = cars(:one)
+    put api_cars_url + "/#{existing_car.id}", params: @test_car, as: :json
+    print_response(@response)
+
+    assert_response :bad_request
+  end
+
+  test "edit car whitespace year" do
+    @test_car[:car][:year] = " "
     print_test_car(@test_car)
 
     existing_car = cars(:one)
@@ -301,6 +389,17 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
   end
 
+  test "edit car whitespace make" do
+    @test_car[:car][:make] = " "
+    print_test_car(@test_car)
+
+    existing_car = cars(:one)
+    put api_cars_url + "/#{existing_car.id}", params: @test_car, as: :json
+    print_response(@response)
+
+    assert_response :bad_request
+  end
+
   test "edit car no model" do
     @test_car[:car].delete(:model)
     print_test_car(@test_car)
@@ -314,6 +413,17 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
 
   test "edit car empty model" do
     @test_car[:car][:model] = ""
+    print_test_car(@test_car)
+
+    existing_car = cars(:one)
+    put api_cars_url + "/#{existing_car.id}", params: @test_car, as: :json
+    print_response(@response)
+
+    assert_response :bad_request
+  end
+
+  test "edit car whitespace model" do
+    @test_car[:car][:model] = " "
     print_test_car(@test_car)
 
     existing_car = cars(:one)
@@ -360,7 +470,7 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
   end
 
-  test "edit car existing trim level not found" do
+  test "edit car trim level not found" do
     existing_car = cars(:one)
     @test_car[:car][:trim_levels_attributes].append({"id": 9999, "name": "Invalid"})
     print_test_car(@test_car)
@@ -391,10 +501,10 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     response_data = JSON.parse(@response.body)
 
     assert_response :success
-    assert_equal 2019, response_data['year']
-    assert_equal "Ford", response_data['make']
-    assert_equal "Focus", response_data['model']
-    assert_equal 0, response_data['trimLevels'].length
+    assert_equal 2019, response_data["year"]
+    assert_equal "Ford", response_data["make"]
+    assert_equal "Focus", response_data["model"]
+    assert_equal 0, response_data["trimLevels"].length
 
     # Check other car
     get api_cars_url + "/#{other_car.id}"
@@ -403,12 +513,12 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     response_data = JSON.parse(@response.body)
 
     assert_response :success
-    assert_equal 2017, response_data['year']
-    assert_equal "Honda", response_data['make']
-    assert_equal "Accord", response_data['model']
-    assert_equal "LX", response_data['trimLevels'][0]['name']
-    assert_equal "EX", response_data['trimLevels'][1]['name']
-    assert_equal 2, response_data['trimLevels'].length
+    assert_equal 2017, response_data["year"]
+    assert_equal "Honda", response_data["make"]
+    assert_equal "Accord", response_data["model"]
+    assert_equal "LX", response_data["trimLevels"][0]["name"]
+    assert_equal "EX", response_data["trimLevels"][1]["name"]
+    assert_equal 2, response_data["trimLevels"].length
   end
 
   test "edit car new trim level" do
@@ -463,10 +573,10 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     response_data = JSON.parse(@response.body)
 
     assert_response :success
-    assert_equal 1, response_data['content'].length
+    assert_equal 1, response_data["content"].length
   end
 
-  test "delete non existing car" do
+  test "delete car not found" do
     delete api_cars_url + "/9999", as: :json
     print_response(@response)
 
@@ -479,9 +589,9 @@ class Api::CarsControllerTest < ActionDispatch::IntegrationTest
     response_data = JSON.parse(@response.body)
 
     assert_response :success
-    assert_equal 1, response_data['makeCounts']['Honda']
-    assert_equal 1, response_data['makeCounts']['Ford']
-    assert_equal 1, response_data['yearCounts']['2017']
-    assert_equal 1, response_data['yearCounts']['2019']
+    assert_equal 1, response_data["makeCounts"]["Honda"]
+    assert_equal 1, response_data["makeCounts"]["Ford"]
+    assert_equal 1, response_data["yearCounts"]["2017"]
+    assert_equal 1, response_data["yearCounts"]["2019"]
   end
 end

@@ -57,6 +57,7 @@ class CarDataTest(TestCase):
         print("\nResponse:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 2)
 
     def test_read_one_car_not_found(self):
         response = self.client.get('/api/resources/cars/{}'.format(9999))
@@ -69,6 +70,7 @@ class CarDataTest(TestCase):
         print("\nResponse:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 3)
 
     def test_add_car_no_year(self):
         self.car.pop('year', None)
@@ -78,6 +80,18 @@ class CarDataTest(TestCase):
 
     def test_add_car_empty_year(self):
         self.car['year'] = ""
+        response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_add_car_non_numeric_year(self):
+        self.car['year'] = "abc"
+        response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_add_car_whitespace_year(self):
+        self.car['year'] = " "
         response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
 
         self.assertEqual(response.status_code, 400)
@@ -112,6 +126,12 @@ class CarDataTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
+    def test_add_car_whitespace_make(self):
+        self.car['make'] = " "
+        response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
     def test_add_car_no_model(self):
         self.car.pop('model', None)
         response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
@@ -124,6 +144,12 @@ class CarDataTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
+    def test_add_car_whitespace_model(self):
+        self.car['model'] = " "
+        response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
     def test_add_car_no_trim_levels(self):
         self.car.pop('trimLevels', None)
         response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
@@ -131,6 +157,7 @@ class CarDataTest(TestCase):
         print("\nResponse:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 0)
 
     def test_add_car_empty_trim_levels(self):
         self.car['trimLevels'] = ""
@@ -139,14 +166,38 @@ class CarDataTest(TestCase):
         print("\nResponse:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 0)
 
     def test_add_car_new_empty_trim_level(self):
         self.car['trimLevels'].append({'name': ''})
         response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
 
         print("\nResponse:")
+        response_data = response.json()
+        pprint(response_data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 3)
+
+    def test_add_car_new_whitespace_trim_level(self):
+        self.car['trimLevels'].append({'name': ' '})
+        response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
+
+        print("\nResponse:")
+        response_data = response.json()
+        pprint(response_data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 3)
+
+    def test_add_car_new_blank_trim_level(self):
+        self.car['trimLevels'].append({})
+        response = self.client.post('/api/resources/cars', json.dumps(self.car), 'application/json')
+
+        print("\nResponse:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 3)
 
     def test_add_car_extra_data(self):
         self.car['extra'] = {
@@ -173,6 +224,7 @@ class CarDataTest(TestCase):
         print("\nResponse:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 5)
 
     def test_edit_car_not_found(self):
         response = self.client.put('/api/resources/cars/{}'.format(9999), json.dumps(self.car), 'application/json')
@@ -189,6 +241,20 @@ class CarDataTest(TestCase):
     def test_edit_car_empty_year(self):
         existing_car_id = self.car_list[0].id
         self.car['year'] = ""
+        response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_edit_car_non_numeric_year(self):
+        existing_car_id = self.car_list[0].id
+        self.car['year'] = "abc"
+        response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_edit_car_whitespace_year(self):
+        existing_car_id = self.car_list[0].id
+        self.car['year'] = " "
         response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
 
         self.assertEqual(response.status_code, 400)
@@ -218,9 +284,37 @@ class CarDataTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
+    def test_edit_car_empty_make(self):
+        existing_car_id = self.car_list[0].id
+        self.car['make'] = ""
+        response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_edit_car_whitespace_make(self):
+        existing_car_id = self.car_list[0].id
+        self.car['make'] = " "
+        response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
     def test_edit_car_no_model(self):
         existing_car_id = self.car_list[0].id
         self.car.pop('model', None)
+        response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_edit_car_empty_model(self):
+        existing_car_id = self.car_list[0].id
+        self.car['model'] = ""
+        response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_edit_car_whitespace_model(self):
+        existing_car_id = self.car_list[0].id
+        self.car['model'] = " "
         response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
 
         self.assertEqual(response.status_code, 400)
@@ -233,6 +327,7 @@ class CarDataTest(TestCase):
         print("\nResponse:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 2)
 
     def test_edit_car_existing_trim_level_no_name(self):
         existing_car_id = self.car_list[0].id
@@ -266,6 +361,7 @@ class CarDataTest(TestCase):
         response = self.client.put('/api/resources/cars/{}'.format(existing_car_id), json.dumps(self.car), 'application/json')
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 5)
 
     def test_edit_car_trim_level_other_car(self):
         existing_car_id = self.car_list[1].id
@@ -283,9 +379,13 @@ class CarDataTest(TestCase):
         print("\nResponse for PUT request:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 3)
 
         # Check other car's trim level
         response_other_existing_car = self.client.get('/api/resources/cars/{}'.format(other_existing_car.id))
+        self.assertEqual(response_other_existing_car.status_code, 200)
+        self.assertEqual(len(response_other_existing_car.json()['trimLevels']), 2)
+
         print("\nResponse for GET request:")
         pprint(response_other_existing_car.json())
         response_other_existing_trim_levels = response_other_existing_car.json()['trimLevels']
@@ -301,6 +401,7 @@ class CarDataTest(TestCase):
         print("\nResponse:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 5)
 
     def test_edit_car_new_blank_trim_level(self):
         existing_car_id = self.car_list[0].id
@@ -310,6 +411,7 @@ class CarDataTest(TestCase):
         print("\nResponse:")
         pprint(response.json())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['trimLevels']), 5)
 
     def test_edit_car_extra_data(self):
         existing_car_id = self.car_list[0].id
@@ -328,7 +430,7 @@ class CarDataTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_delete_non_existing_car(self):
+    def test_delete_car_not_found(self):
         response = self.client.delete('/api/resources/cars/{}'.format(9999), json.dumps(self.car), 'application/json')
 
         self.assertEqual(response.status_code, 404)
