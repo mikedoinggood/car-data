@@ -66,7 +66,8 @@ def cars_post(request):
 
         if trim_levels:
             for trim_level in trim_levels:
-                if trim_level['name']:
+                trim_level_name = trim_level.get('name')
+                if trim_level_name and trim_level_name.strip():
                     car.trimlevel_set.add(TrimLevel(car=car, name=trim_level['name']), bulk=False)
 
     car_dict = convert_car_to_dict(car)
@@ -116,7 +117,8 @@ def car_update_put(self, request, *args, **kwargs):
                         existing_trim_level.name = trim_level['name']
                         existing_trim_level.save()
                 else:
-                    if trim_level.get('name'):
+                    trim_level_name = trim_level.get('name')
+                    if trim_level_name and trim_level_name.strip():
                         car.trimlevel_set.add(TrimLevel(car=car, name=trim_level['name']), bulk=False)
 
     car_dict = convert_car_to_dict(car)
@@ -132,10 +134,13 @@ def car_delete(self, request, *arg, **kwargs):
     return HttpResponse(status=200, content_type='application/json')
 
 def validate_car(year, make, model, trim_levels):
-    if not year or not make or not model:
+    if not year or not make or not make.strip() or not model or not model.strip():
         return False
 
-    if year < 1885 or year > 3000:
+    try:
+        if year < 1885 or year > 3000:
+            return False
+    except TypeError as e:
         return False
 
     if trim_levels:

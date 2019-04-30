@@ -125,7 +125,7 @@ class CarResourceController extends Controller
      */
     private function validateRequest($request) {
         $request->validate([
-            'year' => 'required|gte:1885|lte:3000',
+            'year' => 'bail|required|numeric|gte:1885|lte:3000',
             'make' => 'required',
             'model' => 'required',
         ]);

@@ -141,7 +141,9 @@ public class CarRestControllerTest {
 
         mockMvc.perform(get(carsUrl + carId))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.trimLevels", hasSize(3)));
     }
 
     @Test
@@ -160,7 +162,9 @@ public class CarRestControllerTest {
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.trimLevels", hasSize(2)));
     }
 
     @Test
@@ -179,6 +183,32 @@ public class CarRestControllerTest {
     @Test
     public void addCarEmptyYear() throws Exception {
         carNode.put("year", "");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(post(carsUrl)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addCarNonNumericYear() throws Exception {
+        carNode.put("year", "abc");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(post(carsUrl)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addCarWhitespaceYear() throws Exception {
+        carNode.put("year", " ");
         String carJson = carNode.toString();
         System.out.println("carJson:\n" + carJson);
 
@@ -246,6 +276,19 @@ public class CarRestControllerTest {
     }
 
     @Test
+    public void addCarWhitespaceMake() throws Exception {
+        carNode.put("make", " ");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(post(carsUrl)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void addCarNoModel() throws Exception {
         carNode.remove("model");
         String carJson = carNode.toString();
@@ -272,6 +315,19 @@ public class CarRestControllerTest {
     }
 
     @Test
+    public void addCarWhitespaceModel() throws Exception {
+        carNode.put("model", " ");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(post(carsUrl)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void addCarNoTrimLevels() throws Exception {
         carNode.remove("trimLevels");
         String carJson = carNode.toString();
@@ -281,12 +337,13 @@ public class CarRestControllerTest {
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trimLevels", hasSize(0)));
     }
 
     @Test
     public void addCarEmptyTrimLevels() throws Exception {
-        carNode.putArray("trimLevels");
+        carNode.put("trimLevels", "");
         String carJson = carNode.toString();
         System.out.println("carJson:\n" + carJson);
 
@@ -294,7 +351,7 @@ public class CarRestControllerTest {
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -310,7 +367,41 @@ public class CarRestControllerTest {
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trimLevels", hasSize(2)));
+    }
+
+    @Test
+    public void addCarNewWhitespaceTrimLevel() throws Exception {
+        ObjectNode trimLevelNode = mapper.createObjectNode();
+        trimLevelNode.put("name",  " ");
+        ArrayNode arrayNode = (ArrayNode) carNode.get("trimLevels");
+        arrayNode.add(trimLevelNode);
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(post(carsUrl)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trimLevels", hasSize(2)));
+    }
+
+    @Test
+    public void addCarNewBlankTrimLevel() throws Exception {
+        ObjectNode trimLevelNode = mapper.createObjectNode();
+        ArrayNode arrayNode = (ArrayNode) carNode.get("trimLevels");
+        arrayNode.add(trimLevelNode);
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(post(carsUrl)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trimLevels", hasSize(2)));
     }
 
     @Test
@@ -346,7 +437,12 @@ public class CarRestControllerTest {
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.year", is(existingCar.getYear())))
+                .andExpect(jsonPath("$.make", is(existingCar.getMake())))
+                .andExpect(jsonPath("$.model", is(existingCar.getModel())))
+                .andExpect(jsonPath("$.trimLevels", hasSize(3)));
     }
 
     @Test
@@ -380,6 +476,36 @@ public class CarRestControllerTest {
         Long carId = carList.get(0).getId();
         carNode.put("id", carId);
         carNode.put("year", "");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void editCarNonNumericYear() throws Exception {
+        Long carId = carList.get(0).getId();
+        carNode.put("id", carId);
+        carNode.put("year", "abc");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void editCarWhitespaceYear() throws Exception {
+        Long carId = carList.get(0).getId();
+        carNode.put("id", carId);
+        carNode.put("year", " ");
         String carJson = carNode.toString();
         System.out.println("carJson:\n" + carJson);
 
@@ -436,10 +562,70 @@ public class CarRestControllerTest {
     }
 
     @Test
+    public void editCarEmptyMake() throws Exception {
+        Long carId = carList.get(0).getId();
+        carNode.put("id", carId);
+        carNode.put("make", "");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void editCarWhitespaceMake() throws Exception {
+        Long carId = carList.get(0).getId();
+        carNode.put("id", carId);
+        carNode.put("make", " ");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void editCarNoModel() throws Exception {
         Long carId = carList.get(0).getId();
         carNode.put("id", carId);
         carNode.remove("model");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void editCarEmptyModel() throws Exception {
+        Long carId = carList.get(0).getId();
+        carNode.put("id", carId);
+        carNode.put("model", "");
+        String carJson = carNode.toString();
+        System.out.println("carJson:\n" + carJson);
+
+        mockMvc.perform(put(carsUrl + carId)
+                .contentType(contentType)
+                .content(carJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void editCarWhitespaceModel() throws Exception {
+        Long carId = carList.get(0).getId();
+        carNode.put("id", carId);
+        carNode.put("model", " ");
         String carJson = carNode.toString();
         System.out.println("carJson:\n" + carJson);
 
@@ -461,7 +647,8 @@ public class CarRestControllerTest {
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trimLevels", hasSize(0)));
     }
 
     @Test
@@ -575,6 +762,7 @@ public class CarRestControllerTest {
                 .contentType(contentType))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trimLevels", hasSize(3)))
                 .andReturn();
 
         String resultJsonString = result.getResponse().getContentAsString();
@@ -601,23 +789,29 @@ public class CarRestControllerTest {
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trimLevels", hasSize(4)));
     }
 
     @Test
     public void editCarNewBlankTrimLevel() throws Exception {
         Car existingCar = carList.get(0);
-        TrimLevel newTrimLevel = new TrimLevel("");
-        existingCar.getTrimLevels().add(newTrimLevel);
+        System.out.println("Existing car:");
+        printCar(existingCar);
 
-        String carJson = json(existingCar);
-        System.out.println("carJson:\n" + carJson);
+        ObjectNode blankTrimLevel = mapper.createObjectNode();
+        ArrayNode arrayNode = mapper.createArrayNode();
+        arrayNode.add(blankTrimLevel);
+        carNode.putArray("trimLevels").addAll(arrayNode);
+        String carJson = carNode.toString();
+        System.out.println("\ncarJson:\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(carNode));
 
         mockMvc.perform(put(carsUrl + existingCar.getId())
                 .contentType(contentType)
                 .content(carJson))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.trimLevels", hasSize(0)));
     }
 
     @Test
@@ -650,7 +844,7 @@ public class CarRestControllerTest {
     }
 
     @Test
-    public void deleteNonExistingCar() throws Exception {
+    public void deleteCarNotFound() throws Exception {
         mockMvc.perform(delete("/resources/cars/9999")
                 .contentType(contentType))
                 .andDo(print())
@@ -751,6 +945,17 @@ public class CarRestControllerTest {
                 .content(carJson))
                 .andDo(print())
                 .andExpect(expectedStatus);
+    }
+
+    private void printCar(Car car) {
+        System.out.println("ID: " + car.getId());
+        System.out.println("Year: " + car.getYear());
+        System.out.println("Make: " + car.getMake());
+        System.out.println("Model: " + car.getModel());
+        System.out.println("Trim Levels:");
+        for (TrimLevel tl : car.getTrimLevels()) {
+            System.out.println("  ID: " + tl.getId() + ", " + "Name: " + tl.getName());
+        }
     }
 
     private class CarRestControllerTestWatcher extends TestWatcher {

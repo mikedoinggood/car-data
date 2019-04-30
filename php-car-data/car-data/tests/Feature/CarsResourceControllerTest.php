@@ -33,8 +33,8 @@ class CarControllerTest extends TestCase
         $responseData = $response->decodeResponseJson();
 
         $response->assertStatus(200);
-        $this->assertSame(0, count($responseData["data"][0]['trim_levels']));
-        $this->assertSame(2, count($responseData["data"][1]['trim_levels']));
+        $this->assertSame(0, count($responseData["data"][0]["trim_levels"]));
+        $this->assertSame(2, count($responseData["data"][1]["trim_levels"]));
         $this->assertSame(2, count($responseData["data"]));
     }
 
@@ -77,7 +77,7 @@ class CarControllerTest extends TestCase
         $this->assertSame("Plus", $responseData["trim_levels"][0]["name"]);
         $this->assertSame("Premium", $responseData["trim_levels"][1]["name"]);
         $this->assertSame("Advanced", $responseData["trim_levels"][2]["name"]);
-        $this->assertSame(3, count($responseData['trim_levels']));
+        $this->assertSame(3, count($responseData["trim_levels"]));
     }
 
     public function testAddCarNoYear()
@@ -94,6 +94,28 @@ class CarControllerTest extends TestCase
     public function testAddCarEmptyYear()
     {
         $this->testCar["year"] = "";
+        $this->printTestCar();
+
+        $response = $this->actingAs($this->user)->json("POST", $this->carsUrl, $this->testCar);
+        $this->printResponse($response);
+
+        $response->assertStatus(422);
+    }
+
+    public function testAddCarNonNumericYear()
+    {
+        $this->testCar["year"] = "abc";
+        $this->printTestCar();
+
+        $response = $this->actingAs($this->user)->json("POST", $this->carsUrl, $this->testCar);
+        $this->printResponse($response);
+
+        $response->assertStatus(422);
+    }
+
+    public function testAddCarWhitespaceYear()
+    {
+        $this->testCar["year"] = " ";
         $this->printTestCar();
 
         $response = $this->actingAs($this->user)->json("POST", $this->carsUrl, $this->testCar);
@@ -154,6 +176,17 @@ class CarControllerTest extends TestCase
         $response->assertStatus(422);
     }
 
+    public function testAddCarWhitespaceMake()
+    {
+        $this->testCar["make"] = " ";
+        $this->printTestCar();
+
+        $response = $this->actingAs($this->user)->json("POST", $this->carsUrl, $this->testCar);
+        $this->printResponse($response);
+
+        $response->assertStatus(422);
+    }
+
     public function testAddCarNoModel()
     {
         unset($this->testCar["model"]);
@@ -168,6 +201,17 @@ class CarControllerTest extends TestCase
     public function testAddCarEmptyModel()
     {
         $this->testCar["model"] = "";
+        $this->printTestCar();
+
+        $response = $this->actingAs($this->user)->json("POST", $this->carsUrl, $this->testCar);
+        $this->printResponse($response);
+
+        $response->assertStatus(422);
+    }
+
+    public function testAddCarWhitespaceModel()
+    {
+        $this->testCar["model"] = " ";
         $this->printTestCar();
 
         $response = $this->actingAs($this->user)->json("POST", $this->carsUrl, $this->testCar);
@@ -215,6 +259,32 @@ class CarControllerTest extends TestCase
         $this->assertSame(3, count($responseData["trim_levels"]));
     }
 
+    public function testAddCarNewWhitespaceTrimLevel()
+    {
+        array_push($this->testCar["trimLevels"], array("name" => " "));
+        $this->printTestCar();
+
+        $response = $this->actingAs($this->user)->json("POST", $this->carsUrl, $this->testCar);
+        $this->printResponse($response);
+        $responseData = $response->decodeResponseJson();
+
+        $response->assertStatus(200);
+        $this->assertSame(3, count($responseData["trim_levels"]));
+    }
+
+    public function testAddCarNewBlankTrimLevel()
+    {
+        array_push($this->testCar["trimLevels"], json_encode((object) null));
+        $this->printTestCar();
+
+        $response = $this->actingAs($this->user)->json("POST", $this->carsUrl, $this->testCar);
+        $this->printResponse($response);
+        $responseData = $response->decodeResponseJson();
+
+        $response->assertStatus(200);
+        $this->assertSame(3, count($responseData["trim_levels"]));
+    }
+
     public function testAddCarExtraData()
     {
         $this->testCar["something"] = "extra";
@@ -249,7 +319,7 @@ class CarControllerTest extends TestCase
         $this->assertSame("Prius", $responseData["model"]);
         $this->assertSame("A", $responseData["trim_levels"][0]["name"]);
         $this->assertSame("B", $responseData["trim_levels"][1]["name"]);
-        $this->assertSame(2, count($responseData['trim_levels']));
+        $this->assertSame(2, count($responseData["trim_levels"]));
     }
 
     public function testEditCarNotFound()
@@ -275,6 +345,30 @@ class CarControllerTest extends TestCase
     public function testEditCarEmptyYear()
     {
         $this->testCar["year"] = "";
+        $this->printTestCar();
+
+        $existingCar = $this->carArray[0];
+        $response = $this->actingAs($this->user)->json("PUT", $this->carsUrl . "/" . $existingCar->id, $this->testCar);
+        $this->printResponse($response);
+
+        $response->assertStatus(422);
+    }
+
+    public function testEditCarNonNumericYear()
+    {
+        $this->testCar["year"] = "abc";
+        $this->printTestCar();
+
+        $existingCar = $this->carArray[0];
+        $response = $this->actingAs($this->user)->json("PUT", $this->carsUrl . "/" . $existingCar->id, $this->testCar);
+        $this->printResponse($response);
+
+        $response->assertStatus(422);
+    }
+
+    public function testEditCarWhitespaceYear()
+    {
+        $this->testCar["year"] = " ";
         $this->printTestCar();
 
         $existingCar = $this->carArray[0];
@@ -344,6 +438,18 @@ class CarControllerTest extends TestCase
         $response->assertStatus(422);
     }
 
+    public function testEditCarWhitespaceMake()
+    {
+        $this->testCar["make"] = " ";
+        $this->printTestCar();
+
+        $existingCar = $this->carArray[0];
+        $response = $this->actingAs($this->user)->json("PUT", $this->carsUrl . "/" . $existingCar->id, $this->testCar);
+        $this->printResponse($response);
+
+        $response->assertStatus(422);
+    }
+
     public function testEditCarNoModel()
     {
         unset($this->testCar["model"]);
@@ -368,6 +474,18 @@ class CarControllerTest extends TestCase
         $response->assertStatus(422);
     }
 
+    public function testEditCarWhitespaceModel()
+    {
+        $this->testCar["model"] = " ";
+        $this->printTestCar();
+
+        $existingCar = $this->carArray[0];
+        $response = $this->actingAs($this->user)->json("PUT", $this->carsUrl . "/" . $existingCar->id, $this->testCar);
+        $this->printResponse($response);
+
+        $response->assertStatus(422);
+    }
+
     public function testEditCarNoTrimLevels()
     {
         unset($this->testCar["trimLevels"]);
@@ -379,7 +497,7 @@ class CarControllerTest extends TestCase
         $responseData = $response->decodeResponseJson();
 
         $response->assertStatus(200);
-        $this->assertSame(2, count($responseData['trim_levels']));
+        $this->assertSame(2, count($responseData["trim_levels"]));
     }
 
     public function testEditCarExistingTrimLevelNoName()
@@ -419,7 +537,7 @@ class CarControllerTest extends TestCase
         $responseData = $response->decodeResponseJson();
 
         $response->assertStatus(200);
-        $this->assertSame(5, count($responseData['trim_levels']));
+        $this->assertSame(5, count($responseData["trim_levels"]));
     }
 
     public function testEditCarTrimLevelOtherCar()
@@ -442,7 +560,7 @@ class CarControllerTest extends TestCase
         $this->assertSame("Plus", $responseData["trim_levels"][0]["name"]);
         $this->assertSame("Premium", $responseData["trim_levels"][1]["name"]);
         $this->assertSame("Advanced", $responseData["trim_levels"][2]["name"]);
-        $this->assertSame(3, count($responseData['trim_levels']));
+        $this->assertSame(3, count($responseData["trim_levels"]));
 
         // Check other car
         $response = $this->actingAs($this->user)->json("GET", $this->carsUrl . "/" . $otherCar->id);
