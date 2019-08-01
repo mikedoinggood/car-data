@@ -8,7 +8,7 @@ gem 'rails', '~> 5.2.2'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4', '< 0.6.0'
 # Webpacker
-gem 'webpacker', '~> 3.5'
+gem 'webpacker', '~> 4.x'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.12'
 # Use Puma as the app server
