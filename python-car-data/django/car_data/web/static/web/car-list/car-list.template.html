@@ -5,7 +5,7 @@
 <div ng-if="$ctrl.carsFound" class="table-responsive">
   <div>
     <label>Sort by:</label>
-    <select id="carsortby"
+    <select
       ng-options="option.name for option in $ctrl.sortOptions track by option.id"
       ng-model="$ctrl.selectedSortOption"
       ng-change="$ctrl.changeSort()">

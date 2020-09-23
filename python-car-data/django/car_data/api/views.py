@@ -19,11 +19,11 @@ def cars_get(request):
     page_number = request.GET.get('page', '')
 
     if sort == "newest":
-        all_cars_list = Car.objects.order_by('-year', 'make', 'id').all()
+        all_cars_list = Car.objects.order_by('-year', 'make').all()
     elif sort == "oldest":
-        all_cars_list = Car.objects.order_by('year', 'make', 'id').all()
+        all_cars_list = Car.objects.order_by('year', 'make').all()
     else:
-        all_cars_list = Car.objects.order_by('make', 'id').all()
+        all_cars_list = Car.objects.order_by('make').all()
 
     paginator = Paginator(all_cars_list, page_size)
 
