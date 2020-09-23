@@ -19,8 +19,6 @@ from django.contrib import admin
 
 import oauth2_provider.views as oauth2_views
 
-#app_name = 'car_data'
-
 # OAuth2 provider endpoints
 oauth2_endpoint_views = [
     url(r'^authorize/$', oauth2_views.AuthorizationView.as_view(), name="authorize"),
@@ -49,5 +47,5 @@ urlpatterns = [
     url(r'', include('web.urls')),
     url(r'^api/', include('api.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^oauth/', include((oauth2_endpoint_views, "car_data"), namespace="oauth2_provider")),
+    url(r'^oauth/', include(oauth2_endpoint_views, namespace="oauth2_provider")),
 ]
