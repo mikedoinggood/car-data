@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -17,18 +17,18 @@ import com.glicerial.samples.cardata.web.uitests.page.MainPage;
 
 import static org.junit.Assert.*;
 
-public class AddCarsTest {
+public class AddAndFindCarsTest {
 
-    private WebDriver driver;
-    private MainPage mainPage;
-    private List<Map<String, String>> carMapList = new ArrayList<Map<String, String>>();
-    private CarDataUtility carDataUtility = new CarDataUtility();
+    private static WebDriver driver;
+    private static MainPage mainPage;
+    private static List<Map<String, String>> carMapList = new ArrayList<Map<String, String>>();
+    private static CarDataUtility carDataUtility = new CarDataUtility();
 
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void setup() {
         // Setup cars to add
         Map<String, String> carMap1 = new HashMap<String, String>();
-        carMap1.put("year", "2017");
+        carMap1.put("year", "2021");
         carMap1.put("make", "Honda");
         carMap1.put("model", "Civic");
         setupTrimLevels(carMap1);
@@ -37,7 +37,7 @@ public class AddCarsTest {
 
         Map<String, String> carMap2 = new HashMap<String, String>();
         carMap2.clear();
-        carMap2.put("year", "2016");
+        carMap2.put("year", "2020");
         carMap2.put("make", "Toyota");
         carMap2.put("model", "Corolla");
         setupTrimLevels(carMap2);
@@ -46,7 +46,7 @@ public class AddCarsTest {
 
         Map<String, String> carMap3 = new HashMap<String, String>();
         carMap3.clear();
-        carMap3.put("year", "2013");
+        carMap3.put("year", "2012");
         carMap3.put("make", "Ford");
         carMap3.put("model", "Explorer");
         setupTrimLevels(carMap3);
@@ -60,27 +60,37 @@ public class AddCarsTest {
         WebDriverUtility webDriverUtility = new WebDriverUtility();
         driver = webDriverUtility.getNewWebDriver();
         driver.get(webDriverUtility.getHomePageUrl());
-    }
-
-    @Test
-    public void doAddCarsTest() {
         login();
         mainPage = new MainPage(driver);
         addCars();
-        checkCars();
     }
 
-    @After
-    public void tearDown() {
+    @Test
+    public void doAddAndFindCarsByMakeTest() {
+        checkCars(MainPage.CarSortBy.MAKE);
+    }
+
+    @Test
+    public void doAddAndFindCarsByNewestTest() {
+        checkCars(MainPage.CarSortBy.NEWEST);
+    }
+
+    @Test
+    public void doAddAndFindCarsByOldestTest() {
+        checkCars(MainPage.CarSortBy.OLDEST);
+    }
+
+    @AfterClass
+    public static void tearDown() {
         driver.quit();
     }
 
-    private void login() {
+    private static void login() {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login("user", "password");
     }
 
-    private void addCars() {
+    private static void addCars() {
         for (Map<String, String> carMap : carMapList) {
             mainPage.clickAddCarLink();
             AddCarPage addCarPage = new AddCarPage(driver);
@@ -88,7 +98,10 @@ public class AddCarsTest {
         }
     }
 
-    private void checkCars() {
+    private void checkCars(MainPage.CarSortBy carSortValue) {
+        mainPage.selectCarSortBy(carSortValue);
+        System.out.println("Using car sort by value of: " + carSortValue);
+
         Map<String, WebElement> carRows = mainPage.findMultipleCarRows(carMapList);
 
         for (Map<String, String> carMap : carMapList) {
@@ -97,7 +110,7 @@ public class AddCarsTest {
         }
     }
 
-    private void setupTrimLevels(Map<String, String> carMap) {
+    private static void setupTrimLevels(Map<String, String> carMap) {
         CarDataUtility utility = new CarDataUtility();
 
         String randomTrim1 = utility.generateRandomTrimLevel();

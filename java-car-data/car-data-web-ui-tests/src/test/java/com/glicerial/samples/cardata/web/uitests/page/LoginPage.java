@@ -33,6 +33,7 @@ public class LoginPage {
     }
 
     public void login(String username, String password) {
+        System.out.println("Logging in...");
         typeUserName(username);
         typePassword(password);
         clickSignInButton();
