@@ -14,6 +14,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.Select;
 
 import com.glicerial.samples.cardata.web.uitests.CarDataUtility;
 
@@ -22,6 +23,8 @@ public class MainPage {
 
     private WebDriver driver;
     private CarDataUtility carDataUtility = new CarDataUtility();
+
+    public enum CarSortBy { MAKE, OLDEST, NEWEST }
 
     @FindBy(linkText = "Add Car")
     private WebElement addCarLink;
@@ -126,6 +129,23 @@ public class MainPage {
         }
 
         return true;
+    }
+
+    public void selectCarSortBy(CarSortBy carSortBy) {
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        Select carSortBySelect = new Select(wait.until(ExpectedConditions.presenceOfElementLocated(By.id("carsortby"))));
+
+        switch(carSortBy) {
+            case MAKE:
+                carSortBySelect.selectByValue("make");
+                break;
+            case OLDEST:
+                carSortBySelect.selectByValue("oldest");
+                break;
+            case NEWEST:
+                carSortBySelect.selectByValue("newest");
+                break;
+        }
     }
 
     public Map<String, String> carRowToCarMap(WebElement row) {

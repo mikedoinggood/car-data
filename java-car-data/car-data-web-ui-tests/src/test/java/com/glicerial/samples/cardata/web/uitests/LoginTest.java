@@ -158,7 +158,7 @@ public class LoginTest {
 
         // Adding car just to make sure at least one car is present
         Map<String, String> carMap = new HashMap<String, String>();
-        carMap.put("year", "2017");
+        carMap.put("year", "2021");
         carMap.put("make", "Honda");
         carMap.put("model", "Civic");
         carMap.put("trimLevels", "");

@@ -26,7 +26,7 @@ public class DeleteCarTest {
     public void setup() {
         // Setup car to add
         carMap = new HashMap<String, String>();
-        carMap.put("year", "2017");
+        carMap.put("year", "2021");
         carMap.put("make", "Honda");
         carMap.put("model", "Civic");
         setupTrimLevels(carMap);

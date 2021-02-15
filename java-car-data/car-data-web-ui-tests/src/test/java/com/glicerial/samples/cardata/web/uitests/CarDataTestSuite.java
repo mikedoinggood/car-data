@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    AddCarsTest.class,
+    AddAndFindCarsTest.class,
     CarDetailTest.class,
     DeleteCarTest.class,
     EditCarTest.class,
