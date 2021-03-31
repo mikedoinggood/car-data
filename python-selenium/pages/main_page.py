@@ -1,6 +1,8 @@
+from enum import Enum
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
 from car_data_utility import get_car_string
@@ -12,6 +14,11 @@ from .page import BasePage
 LOG = get_logger(__name__)
 
 class MainPage(BasePage):
+    class CarSortBy(Enum):
+        MAKE = 1
+        NEWEST = 2
+        OLDEST = 3
+
     def click_add_car_link(self):
         add_car_link = self.driver.find_element(*MainPageLocators.ADD_CARS_LINK)
         add_car_link.click()
@@ -88,6 +95,16 @@ class MainPage(BasePage):
             return False
 
         return True
+
+    def select_car_sort_by(self, car_sort_by):
+        select = Select(self.driver.find_element(*MainPageLocators.SORT_BY_DROP_DOWN))
+
+        if car_sort_by == self.CarSortBy.MAKE:
+            select.select_by_value("make")
+        elif car_sort_by == self.CarSortBy.NEWEST:
+            select.select_by_value("newest")
+        elif car_sort_by == self.CarSortBy.OLDEST:
+            select.select_by_value("oldest")
 
     def car_row_to_car_dict(self, row):
         td_elements = row.find_elements(By.XPATH, ".//td")
