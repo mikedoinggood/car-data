@@ -1,8 +1,10 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 
 class MainPageLocators():
     ADD_CARS_LINK = (By.LINK_TEXT, "Add Car")
     CAR_ROWS = (By.XPATH, "//table[@id='carstable']/tbody/tr")
+    SORT_BY_DROP_DOWN = (By.ID, "carsortby")
 
 class LoginPageLocators():
     USERNAME_INPUT = (By.ID, "username")

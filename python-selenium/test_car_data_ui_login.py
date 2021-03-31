@@ -127,7 +127,7 @@ class Login(unittest.TestCase):
 
         # Adding car just to make sure at least one car is present
         car = {
-            'year': "2017",
+            'year': "2021",
             'make': "Honda",
             'model': "Accord",
             'trim_levels': [],

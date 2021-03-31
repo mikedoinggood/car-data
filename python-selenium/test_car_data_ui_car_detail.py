@@ -17,7 +17,7 @@ LOG = get_logger(__name__)
 class CarDetail(unittest.TestCase):
     def setUp(self):
         self.car = {
-            'year': "2017",
+            'year': "2021",
             'make': "Honda",
             'model': "Civic",
             'trim_levels': [generate_random_trim_level() for _ in range(3)],
